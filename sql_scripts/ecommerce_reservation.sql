@@ -27,16 +27,16 @@ DROP TABLE IF EXISTS `reservation`;
 CREATE TABLE `reservation` (
   `reservation_id` int NOT NULL AUTO_INCREMENT,
   `product_id` int NOT NULL,
-  `customer_id` int NOT NULL,
-  `quantity_reserved` smallint DEFAULT '0',
+  `user_id` int NOT NULL,
+  `quantity` smallint DEFAULT '0',
   `reservation_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `expiration_date` datetime NOT NULL,
   `status` tinyint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`reservation_id`),
   KEY `fk_reservation_product_product_id_idx` (`product_id`),
-  KEY `fk_reservation_user_user_id_idx` (`customer_id`),
+  KEY `fk_reservation_user_user_id_idx` (`user_id`),
   CONSTRAINT `fk_reservation_product_product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_reservation_user_user_id` FOREIGN KEY (`customer_id`) REFERENCES `user` (`user_id`)
+  CONSTRAINT `fk_reservation_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -58,4 +58,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-07 15:29:10
+-- Dump completed on 2025-01-08 17:38:07

@@ -27,9 +27,9 @@ DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product` (
   `product_id` int NOT NULL,
   `name` varchar(255) NOT NULL,
-  `price` int NOT NULL,
-  `stock_quantity` smallint unsigned NOT NULL DEFAULT '0',
-  `category_id` int unsigned DEFAULT NULL,
+  `price` smallint NOT NULL,
+  `quantity` smallint unsigned NOT NULL DEFAULT '0',
+  `category_id` int NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`product_id`),
@@ -56,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-07 15:29:12
+-- Dump completed on 2025-01-08 17:38:08

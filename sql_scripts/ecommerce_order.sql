@@ -26,16 +26,19 @@ DROP TABLE IF EXISTS `order`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `order` (
   `order_id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
+  `customer_id` int NOT NULL,
+  `seller_id` int NOT NULL,
   `product_id` int NOT NULL,
   `quantity` int NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`order_id`),
-  KEY `fk_order_user_user_id_idx` (`user_id`),
   KEY `fk_order_product_product_id_idx` (`product_id`),
+  KEY `fk_order_customer_customer_id_idx` (`customer_id`),
+  KEY `fk_order_seller_seller_id_idx` (`seller_id`),
+  CONSTRAINT `fk_order_customer_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_order_product_product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_order_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE
+  CONSTRAINT `fk_order_seller_seller_id` FOREIGN KEY (`seller_id`) REFERENCES `seller` (`seller_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -57,4 +60,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-07 15:29:11
+-- Dump completed on 2025-01-08 17:38:08

@@ -31,4 +31,4 @@ springdoc:
 
 logging:
   level:
-    root: DEBUG
+    root: ERROR

@@ -28,6 +28,10 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private int quantity;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
     @Builder
     public Product(String name, int price, int quantity) {
         this.name = name;

@@ -1,0 +1,28 @@
+<configuration>
+    <!-- 콘솔 출력 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 에러 로그를 파일에 저장 -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/error.log</file> <!-- 저장 경로 -->
+        <append>true</append> <!-- 기존 파일에 로그 추가 -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 루트 로거 설정 -->
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </root>
+
+    <!-- 에러 수준에 따라 파일로 로깅 -->
+    <logger name="org.springframework" level="error" additivity="false">
+        <appender-ref ref="ERROR_FILE"/>
+    </logger>
+</configuration>

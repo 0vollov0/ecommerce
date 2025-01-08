@@ -7,8 +7,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateSellerDTO {
+public class CreateCategoryDTO {
     @NotBlank
-    @Size(min = 2, max = 255)
+    @Size(min = 2, max = 45)
     private String name;
 }

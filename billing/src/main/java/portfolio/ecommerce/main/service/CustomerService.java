@@ -16,6 +16,10 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
+    public Iterable<Customer> find() {
+        return customerRepository.findAll();
+    }
+
     private Customer toEntity(CreateCustomerDTO dto) {
         return Customer.builder().name(dto.getName()).build();
     }

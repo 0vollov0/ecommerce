@@ -19,12 +19,8 @@ public class Category {
     @Column(length = 45)
     private String name;
 
-    @Column(nullable = false)
-    private int quantity;
-
     @Builder
-    public Category(String name, int quantity) {
+    public Category(String name) {
         this.name = name;
-        this.quantity = quantity;
     }
 }

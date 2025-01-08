@@ -16,6 +16,10 @@ public class SellerService {
         return sellerRepository.save(seller);
     }
 
+    public Iterable<Seller> find() {
+        return sellerRepository.findAll();
+    }
+
     private Seller toEntity(CreateSellerDTO dto) {
         return Seller.builder().name(dto.getName()).build();
     }

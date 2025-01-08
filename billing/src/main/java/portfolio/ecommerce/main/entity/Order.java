@@ -1,4 +1,4 @@
-package portfolio.ecommerce.billing.entity;
+package portfolio.ecommerce.main.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -15,16 +15,21 @@ public class Order extends BaseEntity {
     private Long order_id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
+
+    @ManyToOne
+    @JoinColumn(name = "seller_id", nullable = false)
+    private Seller seller;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Builder
-    public Order(User user, Product product) {
-        this.user = user;
+    public Order(Customer customer, Seller seller, Product product) {
+        this.customer = customer;
+        this.seller = seller;
         this.product = product;
     }
 }

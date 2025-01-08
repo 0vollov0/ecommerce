@@ -1,4 +1,4 @@
-package portfolio.ecommerce.billing.entity;
+package portfolio.ecommerce.main.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

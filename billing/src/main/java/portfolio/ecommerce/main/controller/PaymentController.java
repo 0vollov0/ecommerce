@@ -1,4 +1,4 @@
-package portfolio.ecommerce.billing.controller;
+package portfolio.ecommerce.main.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

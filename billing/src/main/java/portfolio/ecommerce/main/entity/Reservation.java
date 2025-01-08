@@ -1,4 +1,4 @@
-package portfolio.ecommerce.billing.entity;
+package portfolio.ecommerce.main.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -15,8 +15,8 @@ public class Reservation extends BaseEntity {
     private Long reservation_id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
@@ -29,8 +29,8 @@ public class Reservation extends BaseEntity {
     private byte status;
 
     @Builder
-    public Reservation(User user, Product product, int quantity, byte status) {
-        this.user = user;
+    public Reservation(Customer customer, Product product, int quantity, byte status) {
+        this.customer = customer;
         this.product = product;
         this.quantity = quantity;
         this.status = status;

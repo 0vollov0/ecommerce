@@ -28,10 +28,14 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
+    @Column(nullable = false)
+    private int total_price;
+
     @Builder
-    public Order(Customer customer, Seller seller, Product product) {
+    public Order(Customer customer, Seller seller, Product product, int total_price) {
         this.customer = customer;
         this.seller = seller;
         this.product = product;
+        this.total_price = total_price;
     }
 }

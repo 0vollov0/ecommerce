@@ -1,4 +1,4 @@
-package portfolio.ecommerce.main.entity;
+package portfolio.ecommerce.payment.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -10,20 +10,16 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
-public class Customer extends BaseEntity {
+public class Seller extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long customer_id;
+    private Long seller_id;
 
     @Column
     private String name;
 
-    @Column
-    private int amount;
-
     @Builder
-    public Customer(String name, int amount) {
+    public Seller(String name) {
         this.name = name;
-        this.amount = amount;
     }
 }

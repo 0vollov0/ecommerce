@@ -13,15 +13,12 @@ public class CreateProductDTO {
     @Size(min = 2, max = 255)
     private String name;
 
-    @NotBlank
     @PositiveOrZero
     private int price;
 
-    @NotBlank
     @PositiveOrZero
     private int quantity;
 
-    @NotBlank
     @PositiveOrZero
     private Long category_id;
 }

@@ -1,4 +1,4 @@
-package portfolio.ecommerce.main.entity;
+package portfolio.ecommerce.payment.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -10,34 +10,32 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
-public class Reservation extends BaseEntity {
+public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private Long reservation_id;
+    private Long order_id;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
     @ManyToOne
+    @JoinColumn(name = "seller_id", nullable = false)
+    private Seller seller;
+
+    @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Column(nullable = false)
-    private int quantity;
-
-    @Column(nullable = false)
     private int total_price;
 
-    @Column(nullable = false)
-    private byte status;
-
     @Builder
-    public Reservation(Customer customer, Product product, int quantity, byte status) {
+    public Order(Customer customer, Seller seller, Product product, int total_price) {
         this.customer = customer;
+        this.seller = seller;
         this.product = product;
-        this.quantity = quantity;
-        this.status = status;
+        this.total_price = total_price;
     }
 }

@@ -1,4 +1,4 @@
-package portfolio.ecommerce.main.entity;
+package portfolio.ecommerce.payment.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;

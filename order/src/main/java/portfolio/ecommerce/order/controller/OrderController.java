@@ -12,8 +12,12 @@ import portfolio.ecommerce.order.service.OrderService;
 @RestController
 @RequestMapping("/order")
 public class OrderController {
-    @Autowired
     private OrderService orderService;
+
+    @Autowired
+    public void setOrderService(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @PostMapping
     public boolean order(@Valid OrderDto dto) throws BadRequestException {

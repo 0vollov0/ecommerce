@@ -1,15 +1,13 @@
 package portfolio.ecommerce.order.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
+@Table(name = "`order`")
 public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,17 +27,21 @@ public class Order extends BaseEntity {
     private Product product;
 
     @Column(nullable = false)
+    private int quantity;
+
+    @Column(nullable = false)
     private int total_price;
 
     // 대기중, 재고확보, 결제대기, 결제완료, 결제실패, 취소
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private int state;
 
     @Builder
-    public Order(Customer customer, Seller seller, Product product, int total_price) {
+    public Order(Customer customer, Seller seller, Product product, int quantity, int total_price) {
         this.customer = customer;
         this.seller = seller;
         this.product = product;
+        this.quantity = quantity;
         this.total_price = total_price;
     }
 }

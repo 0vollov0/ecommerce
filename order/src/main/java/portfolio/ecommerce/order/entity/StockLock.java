@@ -37,7 +37,9 @@ public class StockLock extends BaseEntity {
     private int quantity;
 
     @Builder
-    public StockLock(int quantity, LocalDateTime expiredAt) {
+    public StockLock(Order order, Product product, int quantity, LocalDateTime expiredAt) {
+        this.order = order;
+        this.product = product;
         this.quantity = quantity;
         this.expiredAt = expiredAt;
     }

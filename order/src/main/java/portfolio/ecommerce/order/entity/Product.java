@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
@@ -36,6 +39,12 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private int stock;
 
+    @OneToMany(mappedBy = "product")
+    private Set<Order> orders = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "product")
+    private Set<StockLock> stockLocks = new LinkedHashSet<>();
+
     @Builder
     public Product(String name, int price, int stock, Category category, Seller seller) {
         this.name = name;
@@ -43,5 +52,16 @@ public class Product extends BaseEntity {
         this.stock = stock;
         this.category = category;
         this.seller = seller;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "product_id = " + product_id + ", " +
+                "stock = " + stock + ", " +
+                "price = " + price + ", " +
+                "name = " + name + ", " +
+                "seller = " + seller + ", " +
+                "category = " + category + ")";
     }
 }

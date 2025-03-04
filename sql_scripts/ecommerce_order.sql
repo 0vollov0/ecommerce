@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `ecommerce` /*!40100 DEFAULT CHARACTER SET utf8mb3 */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `ecommerce`;
 -- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: ecommerce
@@ -29,13 +27,15 @@ CREATE TABLE `order` (
   `customer_id` int NOT NULL,
   `seller_id` int NOT NULL,
   `product_id` int NOT NULL,
-  `quantity` int NOT NULL,
+  `stock` int NOT NULL,
+  `total_price` int unsigned NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `state` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`order_id`),
-  KEY `fk_order_product_product_id_idx` (`product_id`),
   KEY `fk_order_customer_customer_id_idx` (`customer_id`),
   KEY `fk_order_seller_seller_id_idx` (`seller_id`),
+  KEY `fk_order_product_product_id_idx` (`product_id`),
   CONSTRAINT `fk_order_customer_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_order_product_product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_order_seller_seller_id` FOREIGN KEY (`seller_id`) REFERENCES `seller` (`seller_id`) ON UPDATE CASCADE
@@ -60,4 +60,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-08 17:38:08
+-- Dump completed on 2025-03-04 17:47:09

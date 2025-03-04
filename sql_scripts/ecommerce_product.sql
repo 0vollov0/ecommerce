@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `ecommerce` /*!40100 DEFAULT CHARACTER SET utf8mb3 */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `ecommerce`;
 -- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: ecommerce
@@ -25,17 +23,20 @@ DROP TABLE IF EXISTS `product`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `product` (
-  `product_id` int NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `price` smallint NOT NULL,
-  `quantity` smallint unsigned NOT NULL DEFAULT '0',
+  `product_id` int NOT NULL AUTO_INCREMENT,
   `category_id` int NOT NULL,
+  `seller_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `price` smallint unsigned NOT NULL,
+  `stock` smallint unsigned NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`product_id`),
   KEY `fk_product_category_category_id_idx` (`category_id`),
-  CONSTRAINT `fk_product_category_category_id` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+  KEY `fk_product_seller_id_idx` (`seller_id`),
+  CONSTRAINT `fk_product_category_category_id` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_product_seller_id` FOREIGN KEY (`seller_id`) REFERENCES `seller` (`seller_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -56,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-01-08 17:38:08
+-- Dump completed on 2025-03-04 17:47:10

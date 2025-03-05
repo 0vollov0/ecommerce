@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
@@ -15,7 +18,15 @@ public class Product extends BaseEntity {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long product_id;
+    private Long productId;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "seller_id", nullable = false)
+    private Seller seller;
 
     @Column
     private String name;
@@ -26,17 +37,20 @@ public class Product extends BaseEntity {
 
     @PositiveOrZero
     @Column(nullable = false)
-    private int quantity;
+    private int stock;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @OneToMany(mappedBy = "product")
+    private Set<Order> orders = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "product")
+    private Set<StockLock> stockLocks = new LinkedHashSet<>();
 
     @Builder
-    public Product(String name, int price, int quantity, Category category) {
+    public Product(String name, int price, int stock, Category category, Seller seller) {
         this.name = name;
         this.price = price;
-        this.quantity = quantity;
+        this.stock = stock;
         this.category = category;
+        this.seller = seller;
     }
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import portfolio.ecommerce.order.dto.RequestPaymentDto;
 
 import java.time.LocalDateTime;
 
@@ -15,46 +16,40 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Reservation extends BaseEntity {
+public class StockLock extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private Long reservation_id;
+    private Long stockLockId;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-//    @Column(nullable = false)
-//    private Long customer_id;
-//
-//    @Column(nullable = false)
-//    private Long product_id;
+    @CreatedDate
+    @Column(nullable = false)
+    private LocalDateTime expiredAt;
 
     @Column(nullable = false)
     private int quantity;
 
     @Column(nullable = false)
-    private int total_price;
-
-    @Column(nullable = false)
-    private byte status;
-
-    @CreatedDate
-    @Column(nullable = false)
-    private LocalDateTime expiredAt;
+    private int price;
 
     @Builder
-    public Reservation(int quantity, int total_price, byte status, LocalDateTime expiredAt) {
-//        this.customer_id = customer_id;
-//        this.product_id = product_id;
+    public StockLock(Order order, Product product, int price, int quantity, LocalDateTime expiredAt) {
+        this.order = order;
+        this.product = product;
         this.quantity = quantity;
-        this.total_price = total_price;
-        this.status = status;
         this.expiredAt = expiredAt;
+        this.price = price;
+    }
+
+    public RequestPaymentDto toPaymentRequestDto() {
+        return new RequestPaymentDto(stockLockId, order.getOrderId(), product.getProductId(), expiredAt, quantity, price);
     }
 }

@@ -13,6 +13,7 @@ import portfolio.ecommerce.order.repository.CustomerRepository;
 import portfolio.ecommerce.order.repository.OrderRepository;
 import portfolio.ecommerce.order.repository.ProductRepository;
 import portfolio.ecommerce.order.repository.StockLockRepository;
+import portfolio.ecommerce.order.response.OrderResponse;
 
 import java.time.LocalDateTime;
 
@@ -41,24 +42,20 @@ public class OrderService {
     }
 
     @Transactional()
-    public boolean order(OrderDto dto) {
+    public OrderResponse order(OrderDto dto) {
         Customer customer = this.customerRepository.findById(dto.getCustomer_id()).orElseThrow(EntityNotFoundException::new);
         Product product = this.productRepository.findById(dto.getProduct_id()).orElseThrow(EntityNotFoundException::new);
-
-        System.out.print(customer);
-        System.out.print(product);
-        System.out.print(product.getPrice()*dto.getQuantity());
-        if(product.getStock() < dto.getQuantity()) return false;
+        if(product.getStock() < dto.getQuantity()) return new OrderResponse(false, "Not enough stock to order");
+        int price = dto.getQuantity()*product.getPrice();
+        if(price > customer.getAmount()) return new OrderResponse(false, "Not enough amount to order");
 
         Order newOrder = Order.builder()
                 .customer(customer)
                 .seller(product.getSeller())
                 .product(product)
                 .quantity(dto.getQuantity())
-                .total_price(product.getPrice()*dto.getQuantity())
+                .total_price(price)
                 .build();
-
-        System.out.print(newOrder);
 
         orderRepository.save(newOrder);
         product.setStock(product.getStock() - dto.getQuantity());
@@ -67,34 +64,11 @@ public class OrderService {
                 .order(newOrder)
                 .product(product)
                 .quantity(dto.getQuantity())
-                .expiredAt(LocalDateTime.now())
+                .expiredAt(LocalDateTime.now().plusMinutes(3))
                 .build();
+        customer.setAmount(customer.getAmount() - price);
+        customerRepository.save(customer);
         stockLockRepository.save(stockLock);
-        return true;
+        return new OrderResponse(true, "Your order has been proceed");
     }
-
-//
-//    @Transactional()
-//    public boolean order(OrderDTO dto) throws BadRequestException {
-//        Product product = productRepository.findById(dto.getProduct_id()).orElseThrow(EntityNotFoundException::new);
-//
-//        if (product.getQuantity() < dto.getQuantity()) {
-//            throw new BadRequestException("");
-//        }
-//
-//        product.setQuantity(product.getQuantity() - dto.getQuantity());
-//        productRepository.save(product);
-//
-//        Reservation reservation = Reservation.builder()
-//                .customer_id(dto.getCustomer_id())
-//                .product_id(dto.getProduct_id())
-//                .total_price(product.getPrice()*dto.getQuantity())
-//                .quantity(dto.getQuantity())
-//                .expiredAt(LocalDateTime.now().plusMinutes(10))
-//                .build();
-//
-//        reservationRepository.save(reservation);
-//
-//        return false;
-//    }
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import portfolio.ecommerce.order.dto.OrderDto;
+import portfolio.ecommerce.order.response.OrderResponse;
 import portfolio.ecommerce.order.service.OrderService;
 
 @RestController
@@ -20,7 +21,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public boolean order(@Valid OrderDto dto) throws BadRequestException {
+    public OrderResponse order(@Valid OrderDto dto) throws BadRequestException {
         return orderService.order(dto);
     }
 }

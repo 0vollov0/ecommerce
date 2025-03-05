@@ -28,10 +28,10 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 	implementation 'me.paulschwarz:spring-dotenv:4.0.0'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
-	// https://mvnrepository.com/artifact/com.rabbitmq/amqp-client
-	implementation group: 'com.rabbitmq', name: 'amqp-client', version: '5.21.0'
 	// https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
 	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.3.0'
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-amqp
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-amqp', version: '3.4.2'
 }
 
 tasks.named('test') {

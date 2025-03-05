@@ -15,5 +15,5 @@ public class RequestPaymentDto {
     private Long productId;
     private LocalDateTime expiredAt;
     private int quantity;
-    private int price;
+    private int salesPrice;
 }

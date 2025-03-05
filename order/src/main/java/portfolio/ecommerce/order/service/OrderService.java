@@ -2,6 +2,7 @@ package portfolio.ecommerce.order.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import portfolio.ecommerce.order.dto.OrderDto;

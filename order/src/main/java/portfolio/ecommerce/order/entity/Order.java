@@ -12,7 +12,7 @@ public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private Long order_id;
+    private Long orderId;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)

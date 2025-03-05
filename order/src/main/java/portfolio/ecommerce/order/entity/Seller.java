@@ -10,7 +10,7 @@ import lombok.*;
 public class Seller extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seller_id;
+    private Long sellerId;
 
     @Column
     private String name;

@@ -18,7 +18,7 @@ public class Product extends BaseEntity {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long product_id;
+    private Long productId;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
@@ -52,16 +52,5 @@ public class Product extends BaseEntity {
         this.stock = stock;
         this.category = category;
         this.seller = seller;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "product_id = " + product_id + ", " +
-                "stock = " + stock + ", " +
-                "price = " + price + ", " +
-                "name = " + name + ", " +
-                "seller = " + seller + ", " +
-                "category = " + category + ")";
     }
 }

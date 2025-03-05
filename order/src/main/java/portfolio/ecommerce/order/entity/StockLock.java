@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import portfolio.ecommerce.order.dto.RequestPaymentDto;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +20,7 @@ public class StockLock extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private Long stock_lock_id;
+    private Long stockLockId;
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
@@ -33,14 +34,22 @@ public class StockLock extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime expiredAt;
 
-    @Column()
+    @Column(nullable = false)
     private int quantity;
 
+    @Column(nullable = false)
+    private int price;
+
     @Builder
-    public StockLock(Order order, Product product, int quantity, LocalDateTime expiredAt) {
+    public StockLock(Order order, Product product, int price, int quantity, LocalDateTime expiredAt) {
         this.order = order;
         this.product = product;
         this.quantity = quantity;
         this.expiredAt = expiredAt;
+        this.price = price;
+    }
+
+    public RequestPaymentDto toPaymentRequestDto() {
+        return new RequestPaymentDto(stockLockId, order.getOrderId(), product.getProductId(), expiredAt, quantity, price);
     }
 }

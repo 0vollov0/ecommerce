@@ -23,6 +23,7 @@ public class OrderService {
     private OrderRepository orderRepository;
     private CustomerRepository customerRepository;
     private StockLockRepository stockLockRepository;
+    private PaymentRequestSender paymentRequestSender;
 
     @Autowired
     public void setCustomerRepository(CustomerRepository customerRepository) {
@@ -39,6 +40,10 @@ public class OrderService {
     @Autowired
     public void setStockLockRepository(StockLockRepository stockLockRepository) {
         this.stockLockRepository = stockLockRepository;
+    }
+    @Autowired
+    public void setPaymentRequestSender(PaymentRequestSender paymentRequestSender) {
+        this.paymentRequestSender = paymentRequestSender;
     }
 
     @Transactional()
@@ -63,12 +68,14 @@ public class OrderService {
         StockLock stockLock = StockLock.builder()
                 .order(newOrder)
                 .product(product)
+                .price(price)
                 .quantity(dto.getQuantity())
                 .expiredAt(LocalDateTime.now().plusMinutes(3))
                 .build();
         customer.setAmount(customer.getAmount() - price);
         customerRepository.save(customer);
         stockLockRepository.save(stockLock);
+        this.paymentRequestSender.sendPaymentRequest(stockLock.toPaymentRequestDto());
         return new OrderResponse(true, "Your order has been proceed");
     }
 }

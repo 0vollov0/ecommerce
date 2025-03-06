@@ -1,4 +1,4 @@
-package portfolio.ecommerce.worker.dto;
+package portfolio.ecommerce.order.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

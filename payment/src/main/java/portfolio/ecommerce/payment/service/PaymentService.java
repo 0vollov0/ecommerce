@@ -39,7 +39,6 @@ public class PaymentService {
             PaymentResultDto resultDto = new PaymentResultDto(true, dto.getOrderId());
             paymentResultSender.sendPaymentResult(resultDto);
         } catch (Exception e) {
-            log.error(e.getMessage());
             Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(EntityNotFoundException::new);
             order.setState(2);
             orderRepository.save(order);

@@ -10,16 +10,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-    public static final String PAYMENT_REQUEST_QUEUE = "worker.request";
-    public static final String PAYMENT_RESULT_QUEUE = "worker.result";
+    public static final String PAYMENT_REQUEST_QUEUE = "payment.request";
+    public static final String PAYMENT_RESULT_QUEUE = "payment.result";
 
     @Bean
-    public Queue workerRequestQueue() {
+    public Queue paymentRequestQueue() {
         return new Queue(PAYMENT_REQUEST_QUEUE, true);
     }
 
     @Bean
-    public Queue workerResultQueue() {
+    public Queue paymentResultQueue() {
         return new Queue(PAYMENT_RESULT_QUEUE, true);
     }
 

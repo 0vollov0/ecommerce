@@ -38,18 +38,18 @@ public class StockLock extends BaseEntity {
     private int quantity;
 
     @Column(nullable = false)
-    private int price;
+    private int salesPrice;
 
     @Builder
-    public StockLock(Order order, Product product, int price, int quantity, LocalDateTime expiredAt) {
+    public StockLock(Order order, Product product, int salesPrice, int quantity, LocalDateTime expiredAt) {
         this.order = order;
         this.product = product;
         this.quantity = quantity;
         this.expiredAt = expiredAt;
-        this.price = price;
+        this.salesPrice = salesPrice;
     }
 
     public RequestPaymentDto toPaymentRequestDto() {
-        return new RequestPaymentDto(stockLockId, order.getOrderId(), product.getProductId(), expiredAt, quantity, price);
+        return new RequestPaymentDto(stockLockId, order.getOrderId(), product.getProductId(), expiredAt, quantity, salesPrice);
     }
 }

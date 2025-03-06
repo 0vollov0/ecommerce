@@ -33,7 +33,7 @@ public class Product extends BaseEntity {
 
     @PositiveOrZero
     @Column(nullable = false)
-    private int price;
+    private int salesPrice;
 
     @PositiveOrZero
     @Column(nullable = false)
@@ -46,9 +46,9 @@ public class Product extends BaseEntity {
     private Set<StockLock> stockLocks = new LinkedHashSet<>();
 
     @Builder
-    public Product(String name, int price, int stock, Category category, Seller seller) {
+    public Product(String name, int salesPrice, int stock, Category category, Seller seller) {
         this.name = name;
-        this.price = price;
+        this.salesPrice = salesPrice;
         this.stock = stock;
         this.category = category;
         this.seller = seller;

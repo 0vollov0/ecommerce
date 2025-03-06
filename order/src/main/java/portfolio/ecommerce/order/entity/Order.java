@@ -1,7 +1,10 @@
 package portfolio.ecommerce.order.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -30,18 +33,18 @@ public class Order extends BaseEntity {
     private int quantity;
 
     @Column(nullable = false)
-    private int total_price;
+    private int salesPrice;
 
-    // 대기중, 재고확보, 결제대기, 결제완료, 결제실패, 취소
+    // 대기중(0), 결제완료(1), 결제실패(2)
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private int state;
 
     @Builder
-    public Order(Customer customer, Seller seller, Product product, int quantity, int total_price) {
+    public Order(Customer customer, Seller seller, Product product, int quantity, int salesPrice) {
         this.customer = customer;
         this.seller = seller;
         this.product = product;
         this.quantity = quantity;
-        this.total_price = total_price;
+        this.salesPrice = salesPrice;
     }
 }

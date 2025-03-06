@@ -52,15 +52,15 @@ public class OrderService {
         Customer customer = this.customerRepository.findById(dto.getCustomer_id()).orElseThrow(EntityNotFoundException::new);
         Product product = this.productRepository.findById(dto.getProduct_id()).orElseThrow(EntityNotFoundException::new);
         if(product.getStock() < dto.getQuantity()) return new OrderResponse(false, "Not enough stock to order");
-        int price = dto.getQuantity()*product.getPrice();
-        if(price > customer.getAmount()) return new OrderResponse(false, "Not enough amount to order");
+        int salesPrice = dto.getQuantity()*product.getSalesPrice();
+        if(salesPrice > customer.getAmount()) return new OrderResponse(false, "Not enough amount to order");
 
         Order newOrder = Order.builder()
                 .customer(customer)
                 .seller(product.getSeller())
                 .product(product)
                 .quantity(dto.getQuantity())
-                .total_price(price)
+                .salesPrice(salesPrice)
                 .build();
 
         orderRepository.save(newOrder);
@@ -69,11 +69,11 @@ public class OrderService {
         StockLock stockLock = StockLock.builder()
                 .order(newOrder)
                 .product(product)
-                .price(price)
+                .salesPrice(salesPrice)
                 .quantity(dto.getQuantity())
                 .expiredAt(LocalDateTime.now().plusMinutes(3))
                 .build();
-        customer.setAmount(customer.getAmount() - price);
+        customer.setAmount(customer.getAmount() - salesPrice);
         customerRepository.save(customer);
         stockLockRepository.save(stockLock);
         this.paymentRequestSender.sendPaymentRequest(stockLock.toPaymentRequestDto());

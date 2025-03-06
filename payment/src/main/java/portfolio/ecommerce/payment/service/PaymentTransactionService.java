@@ -19,7 +19,7 @@ public class PaymentTransactionService {
     private final CustomerRepository customerRepository;
 
     @Transactional
-    public void processExpireStock(Long stockLockId) {
+    public void processExpiredStock(Long stockLockId) {
         StockLock stockLock = stockLockRepository.findById(stockLockId).orElseThrow(EntityNotFoundException::new);
         Product product = productRepository.findById(stockLock.getProduct().getProductId()).orElseThrow(EntityNotFoundException::new);
         product.setStock(product.getStock() + stockLock.getQuantity());

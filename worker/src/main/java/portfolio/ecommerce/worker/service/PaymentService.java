@@ -2,7 +2,6 @@ package portfolio.ecommerce.worker.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,7 @@ public class PaymentService {
     @RabbitListener(queues = RabbitConfig.PAYMENT_RESULT_QUEUE)
     public void processPayment(PaymentResultDto dto) throws Exception {
         Order order = em.createQuery(
-                    "SELECT o FROM Order o JOIN o.product p WHERE o.orderId = :orderId", Order.class)
+                    "SELECT o FROM Order o WHERE o.orderId = :orderId", Order.class)
             .setParameter("orderId", dto.getOrderId())
             .getSingleResult();
         SseEmitter sseEmitter = sseService.getClients().get(order.getCustomer().getCustomerId());

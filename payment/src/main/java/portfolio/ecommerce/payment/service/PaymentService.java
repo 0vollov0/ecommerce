@@ -31,7 +31,7 @@ public class PaymentService {
         try {
             LocalDateTime now = LocalDateTime.now();
             boolean isExpired = dto.getExpiredAt().isAfter(now);
-            if (isExpired) paymentTransactionService.processExpireStock(dto.getStockLockId());
+            if (isExpired) paymentTransactionService.processExpiredStock(dto.getStockLockId());
             Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(EntityNotFoundException::new);
             order.setState(isExpired ? 2 : 1);
             orderRepository.save(order);

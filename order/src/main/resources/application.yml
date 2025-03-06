@@ -1,12 +1,13 @@
 server:
   port: 8080
+
 spring:
   application:
     name: order
   config:
     import: optional:file:.env[.properties]
   datasource:
-    url: jdbc:mysql://${DB_HOST}/${DB_NAME}
+    url: jdbc:mysql://${DB_HOST:localhost}/${DB_NAME:ecommerce}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver

@@ -30,7 +30,7 @@ public class CustomerService {
     }
 
     public Page<Customer> find(RequestPagingDto dto) {
-        return customerRepository.findAll(PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by("createdAt").descending()));
+        return customerRepository.findAllByDeleted(false, PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by("createdAt").descending()));
     }
 
     @Transactional
@@ -41,6 +41,7 @@ public class CustomerService {
         return customer;
     }
 
+    @Transactional
     public void delete(Long id) {
         Customer customer = customerRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         customer.setDeleted(true);

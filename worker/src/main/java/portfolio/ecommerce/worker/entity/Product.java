@@ -48,6 +48,9 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product")
     private Set<StockLock> stockLocks = new LinkedHashSet<>();
 
+    @Column
+    private boolean deleted;
+
     @Builder
     public Product(String name, int salesPrice, int stock, Category category, Seller seller) {
         this.name = name;

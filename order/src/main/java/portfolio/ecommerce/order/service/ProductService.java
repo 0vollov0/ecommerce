@@ -45,7 +45,7 @@ public class ProductService {
     }
 
     public Page<Product> find(RequestPagingDto dto) {
-        return productRepository.findAll(PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by("createdAt").descending()));
+        return productRepository.findAllByDeleted(false, PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by("createdAt").descending()));
     }
 
     @Transactional

@@ -16,6 +16,8 @@ import portfolio.ecommerce.order.dto.UpdateProductDto;
 import portfolio.ecommerce.order.entity.Product;
 import portfolio.ecommerce.order.service.ProductService;
 
+import java.util.Optional;
+
 @Validated
 @RestController()
 @RequestMapping("/products")
@@ -27,6 +29,11 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<Page<Product>> getProducts(@ModelAttribute RequestPagingDto dto) {
         return ResponseEntity.ok().body(productService.find(dto));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<Product>> getProduct(@PathVariable @Min(1) Long id) {
+        return ResponseEntity.ok().body(productService.findById(id));
     }
 
     @DeleteMapping("/{id}")

@@ -1,5 +1,6 @@
 package portfolio.ecommerce.worker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
@@ -39,9 +40,11 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private int stock;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product")
     private Set<Order> orders = new LinkedHashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product")
     private Set<StockLock> stockLocks = new LinkedHashSet<>();
 

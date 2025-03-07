@@ -48,6 +48,7 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product")
     private Set<StockLock> stockLocks = new LinkedHashSet<>();
 
+    @JsonIgnore
     @Column
     private boolean deleted;
 

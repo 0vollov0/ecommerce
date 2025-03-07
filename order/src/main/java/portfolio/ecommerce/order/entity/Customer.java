@@ -1,5 +1,6 @@
 package portfolio.ecommerce.order.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class Customer extends BaseEntity {
     @Column
     private int amount;
 
+    @JsonIgnore
     @Column
     private boolean deleted;
 

@@ -1,6 +1,7 @@
 package portfolio.ecommerce.order.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,7 +13,6 @@ import portfolio.ecommerce.order.dto.UpdateCustomerDto;
 import portfolio.ecommerce.order.entity.Customer;
 import portfolio.ecommerce.order.repository.CustomerRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,10 +32,12 @@ public class CustomerService {
         return customerRepository.findAll(PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by("createdAt").descending()));
     }
 
-    public void update(Long id, UpdateCustomerDto dto) {
+    @Transactional
+    public Customer update(Long id, UpdateCustomerDto dto) {
         Customer customer = customerRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         customer.setName(dto.getName());
         customer.setAmount(dto.getAmount());
+        return customer;
     }
 
     public void delete(Long id) {

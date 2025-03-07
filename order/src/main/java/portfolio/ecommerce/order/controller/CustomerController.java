@@ -47,8 +47,7 @@ public class CustomerController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateCustomer(@PathVariable @Min(1) Long id, @RequestBody @Validated UpdateCustomerDto dto) {
-        this.customerService.update(id, dto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Customer> updateCustomer(@PathVariable @Min(1) Long id, @RequestBody @Validated UpdateCustomerDto dto) {
+        return ResponseEntity.ok().body(customerService.update(id, dto));
     }
 }

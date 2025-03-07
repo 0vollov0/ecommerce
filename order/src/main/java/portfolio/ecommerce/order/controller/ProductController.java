@@ -14,6 +14,7 @@ import portfolio.ecommerce.order.dto.CreateProductDto;
 import portfolio.ecommerce.order.dto.RequestPagingDto;
 import portfolio.ecommerce.order.dto.UpdateProductDto;
 import portfolio.ecommerce.order.entity.Product;
+import portfolio.ecommerce.order.response.ApiErrorResponses;
 import portfolio.ecommerce.order.service.ProductService;
 
 import java.util.Optional;
@@ -26,16 +27,19 @@ import java.util.Optional;
 public class ProductController {
     private final ProductService productService;
 
+    @ApiErrorResponses
     @GetMapping
     public ResponseEntity<Page<Product>> getProducts(@ModelAttribute RequestPagingDto dto) {
         return ResponseEntity.ok().body(productService.find(dto));
     }
 
+    @ApiErrorResponses
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Product>> getProduct(@PathVariable @Min(1) Long id) {
         return ResponseEntity.ok().body(productService.findById(id));
     }
 
+    @ApiErrorResponses
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable @Min(1) Long id) {
         this.productService.delete(id);
@@ -48,11 +52,13 @@ public class ProductController {
                     @ApiResponse(responseCode = "201")
             }
     )
+    @ApiErrorResponses
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody @Validated CreateProductDto dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.productService.create(dto));
     }
 
+    @ApiErrorResponses
     @PatchMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable @Min(1) Long id, @RequestBody @Validated UpdateProductDto dto) {
         return ResponseEntity.ok().body(productService.update(id, dto));

@@ -1,13 +1,12 @@
 package portfolio.ecommerce.order.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
+@NoArgsConstructor
 public class CreateProductDto {
     @NotNull
     @PositiveOrZero
@@ -18,6 +17,8 @@ public class CreateProductDto {
     private Long sellerId;
 
     @NotBlank
+    @Size(min = 2, max = 20, message = "name must be between 2 and 20 characters")
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "name must be number or character")
     private String name;
 
     @PositiveOrZero
@@ -25,4 +26,13 @@ public class CreateProductDto {
 
     @PositiveOrZero
     private int stock;
+
+    @Builder
+    public CreateProductDto(Long categoryId, Long sellerId, String name, int salesPrice, int stock) {
+        this.categoryId = categoryId;
+        this.sellerId = sellerId;
+        this.name = name;
+        this.salesPrice = salesPrice;
+        this.stock = stock;
+    }
 }

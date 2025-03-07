@@ -14,6 +14,7 @@ import portfolio.ecommerce.order.dto.CreateCustomerDto;
 import portfolio.ecommerce.order.dto.RequestPagingDto;
 import portfolio.ecommerce.order.dto.UpdateCustomerDto;
 import portfolio.ecommerce.order.entity.Customer;
+import portfolio.ecommerce.order.response.ApiErrorResponses;
 import portfolio.ecommerce.order.service.CustomerService;
 
 @Validated
@@ -24,15 +25,17 @@ import portfolio.ecommerce.order.service.CustomerService;
 public class CustomerController {
     private final CustomerService customerService;
 
-    @GetMapping
-    public ResponseEntity<Page<Customer>> getCustomers(@ModelAttribute RequestPagingDto dto) {
-        return ResponseEntity.ok().body(customerService.find(dto));
-    }
-
+    @ApiErrorResponses
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable @Min(1) Long id) {
         this.customerService.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    @ApiErrorResponses
+    @GetMapping
+    public ResponseEntity<Page<Customer>> getCustomers(@ModelAttribute RequestPagingDto dto) {
+        return ResponseEntity.ok().body(customerService.find(dto));
     }
 
     @Operation(
@@ -41,11 +44,13 @@ public class CustomerController {
                     @ApiResponse(responseCode = "201")
             }
     )
+    @ApiErrorResponses
     @PostMapping
     public ResponseEntity<Customer> createCustomer(@RequestBody @Validated CreateCustomerDto dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.customerService.create(dto));
     }
 
+    @ApiErrorResponses
     @PatchMapping("/{id}")
     public ResponseEntity<Customer> updateCustomer(@PathVariable @Min(1) Long id, @RequestBody @Validated UpdateCustomerDto dto) {
         return ResponseEntity.ok().body(customerService.update(id, dto));

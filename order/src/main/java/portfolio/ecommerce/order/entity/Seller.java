@@ -18,6 +18,9 @@ public class Seller extends BaseEntity {
     @Column
     private String name;
 
+    @Column
+    private boolean deleted;
+
     @Builder
     public Seller(String name) {
         this.name = name;

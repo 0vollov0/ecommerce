@@ -1,31 +1,29 @@
 package portfolio.ecommerce.order.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "`order`")
+@ToString
 public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long orderId;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "seller_id", nullable = false)
     private Seller seller;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 

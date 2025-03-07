@@ -3,9 +3,12 @@ package portfolio.ecommerce.order.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import portfolio.ecommerce.order.dto.OrderDto;
+import portfolio.ecommerce.order.dto.RequestPagingDto;
 import portfolio.ecommerce.order.entity.Customer;
 import portfolio.ecommerce.order.entity.Order;
 import portfolio.ecommerce.order.entity.Product;
@@ -17,6 +20,7 @@ import portfolio.ecommerce.order.repository.StockLockRepository;
 import portfolio.ecommerce.order.response.OrderResponse;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -58,5 +62,13 @@ public class OrderService {
         stockLockRepository.save(stockLock);
         this.paymentRequestSender.sendPaymentRequest(stockLock.toPaymentRequestDto());
         return new OrderResponse(true, "Your order has been proceed");
+    }
+
+    public Page<Order> find(RequestPagingDto dto) {
+        return orderRepository.findAll(PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by("createdAt").descending()));
+    }
+
+    public Optional<Order> findById(Long id) {
+        return orderRepository.findById(id);
     }
 }

@@ -26,8 +26,9 @@ CREATE TABLE `stock_lock` (
   `stock_lock_id` int NOT NULL AUTO_INCREMENT,
   `product_id` int NOT NULL,
   `order_id` int NOT NULL,
+  `sales_price` int NOT NULL,
   `quantity` int NOT NULL,
-  `expiredAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `expired_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`stock_lock_id`),
@@ -35,7 +36,7 @@ CREATE TABLE `stock_lock` (
   KEY `fk_stock_lock_order_id_idx` (`order_id`),
   CONSTRAINT `fk_stock_lock_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`),
   CONSTRAINT `fk_stock_lock_product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -56,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-04 17:47:09
+-- Dump completed on 2025-03-07 17:19:54

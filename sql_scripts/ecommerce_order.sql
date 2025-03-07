@@ -27,10 +27,10 @@ CREATE TABLE `order` (
   `customer_id` int NOT NULL,
   `seller_id` int NOT NULL,
   `product_id` int NOT NULL,
-  `stock` int NOT NULL,
-  `total_price` int unsigned NOT NULL,
+  `quantity` int NOT NULL,
+  `sales_price` int unsigned NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `state` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`order_id`),
   KEY `fk_order_customer_customer_id_idx` (`customer_id`),
@@ -39,7 +39,7 @@ CREATE TABLE `order` (
   CONSTRAINT `fk_order_customer_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_order_product_product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_order_seller_seller_id` FOREIGN KEY (`seller_id`) REFERENCES `seller` (`seller_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,6 +48,7 @@ CREATE TABLE `order` (
 
 LOCK TABLES `order` WRITE;
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
+INSERT INTO `order` VALUES (2,3,2,3,10,300000,'2025-03-05 08:20:02','2025-03-05 08:20:02',0),(3,3,2,3,10,300000,'2025-03-05 08:55:09','2025-03-05 08:55:09',0),(4,3,2,3,10,300000,'2025-03-05 08:58:05','2025-03-05 08:58:05',0),(5,3,2,3,1,30000,'2025-03-05 09:02:01','2025-03-05 09:02:01',0),(7,3,2,3,1,30000,'2025-03-05 10:49:09','2025-03-05 10:49:09',0),(8,3,2,3,1,30000,'2025-03-05 10:59:49','2025-03-05 10:59:49',0),(10,3,2,3,1,30000,'2025-03-05 11:07:22','2025-03-05 11:07:22',0),(11,3,2,3,1,30000,'2025-03-05 11:12:09','2025-03-05 11:12:09',0),(12,3,2,3,1,30000,'2025-03-05 11:13:24','2025-03-05 11:13:24',0),(13,3,2,3,1,30000,'2025-03-05 11:49:58','2025-03-05 11:49:58',0),(14,3,2,3,1,30000,'2025-03-05 11:55:14','2025-03-05 11:55:14',0),(17,3,2,3,1,30000,'2025-03-05 17:47:19','2025-03-05 17:47:19',0),(18,3,2,3,1,30000,'2025-03-05 17:48:37','2025-03-06 11:11:05',1),(19,3,2,3,1,30000,'2025-03-06 14:07:50','2025-03-06 14:07:50',1),(20,3,2,3,1,30000,'2025-03-06 14:14:15','2025-03-06 14:14:15',1),(21,3,2,3,1,30000,'2025-03-06 14:19:04','2025-03-06 14:19:04',1),(22,3,2,3,1,30000,'2025-03-06 14:23:11','2025-03-06 14:23:11',1),(23,3,2,3,1,30000,'2025-03-06 14:25:46','2025-03-06 14:25:46',1),(24,3,2,3,1,30000,'2025-03-06 14:40:42','2025-03-06 14:40:42',1);
 /*!40000 ALTER TABLE `order` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -60,4 +61,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-04 17:47:09
+-- Dump completed on 2025-03-07 17:19:53

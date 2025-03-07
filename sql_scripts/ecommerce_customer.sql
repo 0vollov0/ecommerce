@@ -28,8 +28,9 @@ CREATE TABLE `customer` (
   `amount` int unsigned NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `deleted` tinyint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`customer_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,6 +39,7 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
+INSERT INTO `customer` VALUES (1,'박신규',10000,'2025-03-05 08:15:52','2025-03-05 08:15:52',0),(2,'박신규',10000,'2025-03-05 08:15:53','2025-03-05 08:15:53',0),(3,'박신규',99760024,'2025-03-05 08:15:54','2025-03-06 17:10:45',0),(4,'박신규',10000,'2025-03-05 08:15:54','2025-03-05 08:15:54',0),(5,'박신규',10000,'2025-03-05 08:15:54','2025-03-05 08:15:54',0),(6,'string',0,'2025-03-07 09:51:09','2025-03-07 09:51:09',0),(7,'하지마',10,'2025-03-07 09:54:50','2025-03-07 12:26:01',1);
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -50,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-04 17:47:08
+-- Dump completed on 2025-03-07 17:19:54

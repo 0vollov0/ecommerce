@@ -27,16 +27,17 @@ CREATE TABLE `product` (
   `category_id` int NOT NULL,
   `seller_id` int NOT NULL,
   `name` varchar(255) NOT NULL,
-  `price` smallint unsigned NOT NULL,
+  `sales_price` smallint unsigned NOT NULL,
   `stock` smallint unsigned NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `deleted` tinyint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`product_id`),
   KEY `fk_product_category_category_id_idx` (`category_id`),
   KEY `fk_product_seller_id_idx` (`seller_id`),
   CONSTRAINT `fk_product_category_category_id` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_product_seller_id` FOREIGN KEY (`seller_id`) REFERENCES `seller` (`seller_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,6 +46,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
+INSERT INTO `product` VALUES (3,1,2,'물품',30000,162,'2025-03-05 08:17:09','2025-03-06 17:10:45',0),(4,1,2,'물품',30000,200,'2025-03-05 08:17:12','2025-03-05 08:17:12',0),(5,1,2,'물품',30000,200,'2025-03-05 08:17:12','2025-03-05 08:17:12',0),(6,1,2,'물품',30000,200,'2025-03-05 08:17:12','2025-03-05 08:17:12',0),(7,1,2,'물품',30000,200,'2025-03-05 08:17:13','2025-03-05 08:17:13',0),(8,1,2,'물품',30000,200,'2025-03-05 08:17:13','2025-03-05 08:17:13',0),(9,2,3,'fewsfsdfwe',21342,1234,'2025-03-07 11:52:36','2025-03-07 11:52:36',0),(10,2,3,'fewsfsdfwe',0,1234,'2025-03-07 11:53:00','2025-03-07 11:55:01',1),(11,3,3,'gregre',0,0,'2025-03-07 11:53:39','2025-03-07 11:58:37',0);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -57,4 +59,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-04 17:47:10
+-- Dump completed on 2025-03-07 17:19:53

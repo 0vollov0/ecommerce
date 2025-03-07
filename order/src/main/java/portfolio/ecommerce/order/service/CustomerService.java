@@ -11,7 +11,6 @@ import portfolio.ecommerce.order.dto.CreateCustomerDto;
 import portfolio.ecommerce.order.dto.RequestPagingDto;
 import portfolio.ecommerce.order.dto.UpdateCustomerDto;
 import portfolio.ecommerce.order.entity.Customer;
-import portfolio.ecommerce.order.entity.Seller;
 import portfolio.ecommerce.order.repository.CustomerRepository;
 
 import java.util.Optional;

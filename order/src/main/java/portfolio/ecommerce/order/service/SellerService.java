@@ -29,7 +29,7 @@ public class SellerService {
     }
 
     public Page<Seller> find(RequestPagingDto dto) {
-        return sellerRepository.findAll(PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by("createdAt").descending()));
+        return sellerRepository.findAllByDeleted(false, PageRequest.of(dto.getPage(), dto.getPageSize(), Sort.by("createdAt").descending()));
     }
 
     @Transactional
@@ -39,6 +39,7 @@ public class SellerService {
         return seller;
     }
 
+    @Transactional
     public void delete(Long id) {
         Seller seller = sellerRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         seller.setDeleted(true);

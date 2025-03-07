@@ -21,6 +21,9 @@ public class Customer extends BaseEntity {
     @Column
     private int amount;
 
+    @Column
+    private boolean deleted;
+
     @Builder
     public Customer(String name, int amount) {
         this.name = name;

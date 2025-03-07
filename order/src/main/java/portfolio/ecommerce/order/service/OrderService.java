@@ -19,33 +19,13 @@ import portfolio.ecommerce.order.response.OrderResponse;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
-    private ProductRepository productRepository;
-    private OrderRepository orderRepository;
-    private CustomerRepository customerRepository;
-    private StockLockRepository stockLockRepository;
-    private PaymentRequestSender paymentRequestSender;
-
-    @Autowired
-    public void setCustomerRepository(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
-    @Autowired
-    public void setOrderRepository(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
-    @Autowired
-    public void setProductRepository(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
-    @Autowired
-    public void setStockLockRepository(StockLockRepository stockLockRepository) {
-        this.stockLockRepository = stockLockRepository;
-    }
-    @Autowired
-    public void setPaymentRequestSender(PaymentRequestSender paymentRequestSender) {
-        this.paymentRequestSender = paymentRequestSender;
-    }
+    private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
+    private final CustomerRepository customerRepository;
+    private final StockLockRepository stockLockRepository;
+    private final PaymentRequestSender paymentRequestSender;
 
     @Transactional()
     public OrderResponse order(OrderDto dto) {

@@ -1,5 +1,6 @@
 package portfolio.ecommerce.order.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,8 @@ import portfolio.ecommerce.order.response.OrderResponse;
 import portfolio.ecommerce.order.service.OrderService;
 
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/orders")
+@Tag(name = "orders")
 public class OrderController {
     private OrderService orderService;
 

@@ -1,4 +1,4 @@
-package portfolio.ecommerce.order.entity;
+package portfolio.ecommerce.worker.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

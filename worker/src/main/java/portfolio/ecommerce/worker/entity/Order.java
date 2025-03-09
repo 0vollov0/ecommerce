@@ -1,4 +1,4 @@
-package portfolio.ecommerce.order.entity;
+package portfolio.ecommerce.worker.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

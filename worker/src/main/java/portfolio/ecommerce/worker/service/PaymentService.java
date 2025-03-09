@@ -29,7 +29,7 @@ public class PaymentService {
                     "SELECT o FROM Order o WHERE o.orderId = :orderId", Order.class)
             .setParameter("orderId", dto.getOrderId())
             .getSingleResult();
-        SseEmitter sseEmitter = sseService.getClients().get(order.getCustomer().getCustomerId());
+        SseEmitter sseEmitter = sseService.getEmitter(order.getCustomer().getCustomerId());
         if (sseEmitter == null) return;
         OrderResultDto orderResultDto = new OrderResultDto();
         orderResultDto.setSucceed(dto.isSucceed());

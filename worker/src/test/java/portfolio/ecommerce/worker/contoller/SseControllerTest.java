@@ -2,56 +2,55 @@ package portfolio.ecommerce.worker.contoller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import portfolio.ecommerce.worker.controller.SseController;
 import portfolio.ecommerce.worker.service.SseService;
 
-import java.util.concurrent.ConcurrentHashMap;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.assertj.core.api.Assertions.assertThat;
+class SseControllerTest {
 
-
-
-@ExtendWith(SpringExtension.class)
-public class SseControllerTest {
     private MockMvc mockMvc;
-
-    @Mock
     private SseService sseService;
-
-    @InjectMocks
-    private SseController sseController;  // Notification 컨트롤러에 모의 객체 주입
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        sseService = mock(SseService.class);
+        SseController sseController = new SseController(sseService);
         mockMvc = MockMvcBuilders.standaloneSetup(sseController).build();
     }
 
     @Test
-    void testSseConnection() throws Exception {
-        ConcurrentHashMap<Long, SseEmitter> mockClients = new ConcurrentHashMap<>();
-        when(sseService.getClients()).thenReturn(mockClients);
-
+    void testConnect_Success() throws Exception {
         Long customerId = 1L;
+        when(sseService.connect(customerId)).thenReturn(ResponseEntity.ok("Connected to SSE"));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/sse")
-                        .param("customerId", customerId.toString()))
-                .andExpect(status().isOk()) // SSE 연결 시 정상 응답 확인
-                .andReturn();
+        mockMvc.perform(get("/sse").param("customerId", customerId.toString()))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Connected to SSE"));
+    }
 
-        assertThat(mockClients.containsKey(customerId)).isTrue();
-        assertThat(mockClients.get(customerId)).isNotNull();
+    @Test
+    void testConnect_CustomerNotFound() throws Exception {
+        Long customerId = 1L;
+        when(sseService.connect(customerId)).thenReturn(ResponseEntity.badRequest().body("Customer not found"));
+
+        mockMvc.perform(get("/sse").param("customerId", customerId.toString()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Customer not found"));
+    }
+
+    @Test
+    void testConnect_AlreadyConnected() throws Exception {
+        Long customerId = 1L;
+        when(sseService.connect(customerId)).thenReturn(ResponseEntity.status(409).body("Already connected"));
+
+        mockMvc.perform(get("/sse").param("customerId", customerId.toString()))
+                .andExpect(status().isConflict())
+                .andExpect(content().string("Already connected"));
     }
 }

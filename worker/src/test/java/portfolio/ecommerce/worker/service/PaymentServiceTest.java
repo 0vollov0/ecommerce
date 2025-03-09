@@ -16,9 +16,6 @@ import portfolio.ecommerce.worker.entity.Customer;
 import portfolio.ecommerce.worker.entity.Order;
 import portfolio.ecommerce.worker.entity.Product;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -62,14 +59,14 @@ class PaymentServiceTest {
 
         SseEmitter mockSseEmitter = mock(SseEmitter.class);
 
-        Map<Long, SseEmitter> clients = new HashMap<>();
-        clients.put(1L, mockSseEmitter);
+//        Map<Long, SseEmitter> clients = new HashMap<>();
+//        clients.put(1L, mockSseEmitter);
 
         // When (Mock 설정)
         when(em.createQuery(anyString(), eq(Order.class))).thenReturn(query);
         when(query.setParameter(anyString(), any())).thenReturn(query);
         when(query.getSingleResult()).thenReturn(mockOrder);
-        when(sseService.getClients()).thenReturn(clients);
+        when(sseService.getEmitter(1L)).thenReturn(mockSseEmitter);
 
         paymentService.processPayment(paymentResultDto);
 
@@ -92,13 +89,13 @@ class PaymentServiceTest {
 
         SseEmitter mockSseEmitter = mock(SseEmitter.class);
 
-        Map<Long, SseEmitter> clients = new HashMap<>();
-        clients.put(2L, mockSseEmitter);
+//        Map<Long, SseEmitter> clients = new HashMap<>();
+//        clients.put(2L, mockSseEmitter);
 
         when(em.createQuery(anyString(), eq(Order.class))).thenReturn(query);
         when(query.setParameter(anyString(), any())).thenReturn(query);
         when(query.getSingleResult()).thenReturn(mockOrder);
-        when(sseService.getClients()).thenReturn(clients);
+        when(sseService.getEmitter(2L)).thenReturn(mockSseEmitter);
 
         paymentService.processPayment(paymentResultDto);
 
@@ -115,17 +112,17 @@ class PaymentServiceTest {
         Customer mockCustomer = new Customer();
         mockCustomer.setCustomerId(3L);
         mockOrder.setCustomer(mockCustomer);
-        Map<Long, SseEmitter> clients = mock(Map.class);
 
         // When
         when(em.createQuery(anyString(), eq(Order.class))).thenReturn(query);
         when(query.setParameter(anyString(), any())).thenReturn(query);
         when(query.getSingleResult()).thenReturn(mockOrder);
-        when(sseService.getClients()).thenReturn(clients);
+        when(sseService.getEmitter(3L)).thenReturn(null);
+
 
         // Then
         paymentService.processPayment(paymentResultDto);
 
-        verify(clients, times(1)).get(3L);
+        verify(sseService, times(1)).getEmitter(3L);
     }
 }

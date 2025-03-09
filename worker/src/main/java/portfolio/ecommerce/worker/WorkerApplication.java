@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class WorkerApplication {
 	private static final Logger log = LogManager.getLogger(WorkerApplication.class);
 	public static void main(String[] args) {
-		log.info("WorkerApplication is running....");
+		log.info("Starting worker application");
 		SpringApplication.run(WorkerApplication.class, args);
 	}
 }

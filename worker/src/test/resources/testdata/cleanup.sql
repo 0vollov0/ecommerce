@@ -1,0 +1,1 @@
+DELETE FROM customer where customer_id in (99998, 99999);

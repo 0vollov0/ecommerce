@@ -32,6 +32,8 @@ dependencies {
 	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.3.0'
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-amqp
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-amqp', version: '3.4.2'
+	// https://mvnrepository.com/artifact/org.mockito/mockito-core
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.15.2'
 }
 
 tasks.named('test') {

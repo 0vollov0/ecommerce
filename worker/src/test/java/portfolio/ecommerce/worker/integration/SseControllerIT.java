@@ -17,8 +17,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Sql(scripts = "/testdata/customer_data.sql")  // 테스트용 데이터 추가
-@Sql(scripts = "/testdata/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) // 테스트 후 데이터 삭제
+@Sql(scripts = "/data/customer_data.sql")  // 테스트용 데이터 추가
+@Sql(scripts = "/data/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) // 테스트 후 데이터 삭제
 class SseControllerIT {
 
     @Autowired

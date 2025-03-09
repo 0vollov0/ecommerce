@@ -31,7 +31,6 @@ class PaymentServiceTest {
     @Mock
     private TypedQuery<Order> query;
 
-    @InjectMocks
     private PaymentService paymentService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -39,7 +38,9 @@ class PaymentServiceTest {
 
     @BeforeEach
     void setUp() {
+        paymentService = new PaymentService(sseService);
         paymentService.objectMapper = objectMapper;
+        paymentService.em = em;
     }
 
     @Test

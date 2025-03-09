@@ -1,5 +1,6 @@
 package portfolio.ecommerce.worker.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -10,15 +11,12 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@RequiredArgsConstructor
 @Service
 public class SseService {
     private final Map<Long, SseEmitter> clients = new ConcurrentHashMap<>();
 
-    private CustomerRepository customerRepository;
-
-    public SseService(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
+    private final CustomerRepository customerRepository;
 
     public ResponseEntity<String> connect(Long customerId) {
         System.out.println("Connecting to customer " + customerId);

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,13 +15,14 @@ import portfolio.ecommerce.worker.dto.OrderResultDto;
 import portfolio.ecommerce.worker.dto.PaymentResultDto;
 import portfolio.ecommerce.worker.entity.Order;
 
+@RequiredArgsConstructor
 @Service
 public class PaymentService {
     @PersistenceContext
     EntityManager em;
-    @Autowired
-    private SseService sseService;
+    private final SseService sseService;
     ObjectMapper objectMapper = new ObjectMapper();
+
 
     @Transactional
     @RabbitListener(queues = RabbitConfig.PAYMENT_RESULT_QUEUE)

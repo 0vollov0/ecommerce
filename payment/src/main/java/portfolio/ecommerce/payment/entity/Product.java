@@ -42,12 +42,13 @@ public class Product extends BaseEntity {
 
     @JsonIgnore
     @OneToMany(mappedBy = "product")
-    private Set<Order> orders = new LinkedHashSet<>();
+    private Set<Order> payments = new LinkedHashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "product")
     private Set<StockLock> stockLocks = new LinkedHashSet<>();
 
+    @JsonIgnore
     @Column
     private boolean deleted;
 

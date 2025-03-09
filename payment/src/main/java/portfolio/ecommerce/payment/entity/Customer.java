@@ -1,5 +1,6 @@
 package portfolio.ecommerce.payment.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +21,10 @@ public class Customer extends BaseEntity {
 
     @Column
     private int amount;
+
+    @JsonIgnore
+    @Column
+    private boolean deleted;
 
     @Builder
     public Customer(String name, int amount) {

@@ -1,4 +1,4 @@
-package portfolio.ecommerce.worker.entity;
+package portfolio.ecommerce.order.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import portfolio.ecommerce.worker.dto.RequestPaymentDto;
+import portfolio.ecommerce.order.dto.RequestPaymentDto;
 
 import java.time.LocalDateTime;
 

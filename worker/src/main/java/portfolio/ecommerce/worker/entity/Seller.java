@@ -1,5 +1,6 @@
-package portfolio.ecommerce.worker.entity;
+package portfolio.ecommerce.order.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,10 @@ public class Seller extends BaseEntity {
 
     @Column
     private String name;
+
+    @JsonIgnore
+    @Column
+    private boolean deleted;
 
     @Builder
     public Seller(String name) {

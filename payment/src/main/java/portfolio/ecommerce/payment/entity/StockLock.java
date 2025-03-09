@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class StockLock extends BaseEntity {
+public class StockLock extends portfolio.ecommerce.payment.entity.BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
@@ -24,11 +24,11 @@ public class StockLock extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
+    private  Order order;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    private portfolio.ecommerce.payment.entity.Product product;
 
     @CreatedDate
     @Column(nullable = false)
@@ -41,7 +41,7 @@ public class StockLock extends BaseEntity {
     private int salesPrice;
 
     @Builder
-    public StockLock(Order order, Product product, int salesPrice, int quantity, LocalDateTime expiredAt) {
+    public StockLock(Order order, portfolio.ecommerce.payment.entity.Product product, int salesPrice, int quantity, LocalDateTime expiredAt) {
         this.order = order;
         this.product = product;
         this.quantity = quantity;

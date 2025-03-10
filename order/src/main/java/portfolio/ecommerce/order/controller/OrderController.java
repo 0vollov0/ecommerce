@@ -31,7 +31,7 @@ public class OrderController {
 
     @ApiErrorResponses
     @PostMapping
-    public OrderResponse order(@Valid OrderDto dto) throws BadRequestException {
+    public ResponseEntity<OrderResponse> order(@Valid OrderDto dto) throws BadRequestException {
         return orderService.order(dto);
     }
 

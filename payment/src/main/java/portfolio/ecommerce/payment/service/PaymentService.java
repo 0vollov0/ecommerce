@@ -27,7 +27,6 @@ public class PaymentService {
     public void processPayment(RequestPaymentDto dto) throws Exception {
         try {
             LocalDateTime now = LocalDateTime.now();
-            System.out.println(dto.getExpiredAt() + " : " + now + " : " + dto.getExpiredAt().isAfter(now));
             boolean isExpired = now.isAfter(dto.getExpiredAt());
             if (isExpired) paymentTransactionService.processExpiredStock(dto.getStockLockId());
             Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(EntityNotFoundException::new);

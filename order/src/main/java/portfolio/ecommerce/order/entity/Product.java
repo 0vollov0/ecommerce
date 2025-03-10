@@ -53,12 +53,13 @@ public class Product extends BaseEntity {
     private boolean deleted;
 
     @Builder
-    public Product(Long productId, String name, int salesPrice, int stock, Category category, Seller seller) {
+    public Product(Long productId, String name, int salesPrice, int stock, Category category, Seller seller, boolean deleted) {
         this.productId = productId;
         this.name = name;
         this.salesPrice = salesPrice;
         this.stock = stock;
         this.category = category;
         this.seller = seller;
+        this.deleted = deleted;
     }
 }

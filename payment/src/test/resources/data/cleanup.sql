@@ -1,7 +1,7 @@
-DELETE FROM customer where customer_id = 99999;
-DELETE FROM category where category_id = 99999;
-DELETE FROM seller where seller_id = 99999;
-DELETE FROM product where product_id = 99999;
-DELETE FROM `order` where order_id = 99999;
-DELETE FROM stock_lock where stock_lock = 99999;
-DELETE FROM stock_lock where stock_lock = 99998;
+DELETE FROM `ecommerce`.`stock_lock` WHERE (`stock_lock_id` = '99999');
+DELETE FROM `ecommerce`.`stock_lock` WHERE (`stock_lock_id`= '99998');
+DELETE FROM `ecommerce`.`order` WHERE (`order_id` = '99999');
+DELETE FROM `ecommerce`.`product` WHERE (`product_id` = '99999');
+DELETE FROM `ecommerce`.`customer` WHERE (`customer_id` = '99999');
+DELETE FROM `ecommerce`.`seller` WHERE (`seller_id` = '99999');
+DELETE FROM `ecommerce`.`category` WHERE (`category_id` = '99999');

@@ -26,9 +26,9 @@ VALUES
 INSERT INTO `ecommerce`.`stock_lock`
 	(`stock_lock_id`, `product_id`, `order_id`, `sales_price`, `quantity`, `expired_at`)
 VALUES
-	(99999, 99999, 99999, 10*10, 10, (DATE_ADD(NOW(), INTERVAL 5 MINUTE));
+	(99999, 99999, 99999, 10*10, 10, DATE_ADD(NOW(), INTERVAL 5 MINUTE));
 
 INSERT INTO `ecommerce`.`stock_lock`
     (`stock_lock_id`, `product_id`, `order_id`, `sales_price`, `quantity`, `expired_at`)
 VALUES
-    (99998, 99999, 99999, 10*10, 10, (DATE_ADD(NOW(), INTERVAL -5 MINUTE));
+    (99998, 99999, 99999, 10*10, 10, DATE_ADD(NOW(), INTERVAL -5 MINUTE));

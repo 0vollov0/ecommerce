@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@Sql(scripts = "/data/init_payment_service_integration.sql")  // 테스트용 데이터 추가
+@Sql(scripts = "/data/payment.sql")  // 테스트용 데이터 추가
 @Sql(scripts = "/data/cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD) // 테스트 후 데이터 삭제
 class PaymentServiceIntegrationTest {
     @Autowired
@@ -47,7 +47,7 @@ class PaymentServiceIntegrationTest {
     @Mock
     private PaymentTransactionService paymentTransactionService;
 
-    private static Long existingId = 99999L;
+    private static final Long existingId = 99999L;
 
     @BeforeEach
     void setUp() {
@@ -60,14 +60,35 @@ class PaymentServiceIntegrationTest {
         StockLock stockLock = stockLockRepository.findById(existingId).orElseThrow(EntityNotFoundException::new);
         RequestPaymentDto requestPaymentDto = stockLock.toPaymentRequestDto();
 
-        // When
         paymentService.processPayment(requestPaymentDto);
 
-        // Then
         Order updatedOrder = orderRepository.findById(existingId).orElseThrow(EntityNotFoundException::new);
         assertThat(updatedOrder.getState()).isEqualTo(1);
         assertThat(stockLockRepository.findById(existingId)).isEmpty();
-        verify(rabbitTemplate, times(1)).convertAndSend(eq(RabbitConfig.PAYMENT_RESULT_QUEUE), any(PaymentResultDto.class));
+        PaymentResultDto paymentResultDto = (PaymentResultDto) rabbitTemplate.receiveAndConvert(RabbitConfig.PAYMENT_RESULT_QUEUE);
+        PaymentResultDto expectedResultDto = new PaymentResultDto(true, updatedOrder.getOrderId());
+        assertThat(paymentResultDto).isInstanceOf(PaymentResultDto.class);
+        assertThat(paymentResultDto)
+                .extracting(PaymentResultDto::getOrderId, PaymentResultDto::isSucceed)
+                .containsExactly(expectedResultDto.getOrderId(), expectedResultDto.isSucceed());
     }
 
+    @Test
+    void processPayment_shouldHandleExpiredStock() throws Exception {
+        Long expiredId = 99998L;
+        StockLock stockLock = stockLockRepository.findById(expiredId).orElseThrow(EntityNotFoundException::new);
+        RequestPaymentDto requestPaymentDto = stockLock.toPaymentRequestDto();
+
+        paymentService.processPayment(requestPaymentDto);
+
+        Order updatedOrder = orderRepository.findById(existingId).orElseThrow(EntityNotFoundException::new);
+        assertThat(updatedOrder.getState()).isEqualTo(2);
+        assertThat(stockLockRepository.findById(expiredId)).isEmpty();
+        PaymentResultDto paymentResultDto = (PaymentResultDto) rabbitTemplate.receiveAndConvert(RabbitConfig.PAYMENT_RESULT_QUEUE);
+        PaymentResultDto expectedResultDto = new PaymentResultDto(true, updatedOrder.getOrderId());
+        assertThat(paymentResultDto).isInstanceOf(PaymentResultDto.class);
+        assertThat(paymentResultDto)
+                .extracting(PaymentResultDto::getOrderId, PaymentResultDto::isSucceed)
+                .containsExactly(expectedResultDto.getOrderId(), expectedResultDto.isSucceed());
+    }
 }

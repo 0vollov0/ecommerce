@@ -3,8 +3,6 @@ package portfolio.ecommerce.payment.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 import portfolio.ecommerce.payment.config.RabbitConfig;
@@ -19,7 +17,6 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
-    private static final Logger log = LogManager.getLogger(PaymentService.class);
     private final StockLockRepository stockLockRepository;
     private final OrderRepository orderRepository;
     private final PaymentResultSender paymentResultSender;
@@ -30,7 +27,8 @@ public class PaymentService {
     public void processPayment(RequestPaymentDto dto) throws Exception {
         try {
             LocalDateTime now = LocalDateTime.now();
-            boolean isExpired = dto.getExpiredAt().isAfter(now);
+            System.out.println(dto.getExpiredAt() + " : " + now + " : " + dto.getExpiredAt().isAfter(now));
+            boolean isExpired = now.isAfter(dto.getExpiredAt());
             if (isExpired) paymentTransactionService.processExpiredStock(dto.getStockLockId());
             Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(EntityNotFoundException::new);
             order.setState(isExpired ? 2 : 1);

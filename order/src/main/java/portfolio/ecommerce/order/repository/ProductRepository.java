@@ -7,4 +7,5 @@ import portfolio.ecommerce.order.entity.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findAllByDeleted(boolean deleted, Pageable pageable);
+    boolean existsByProductIdAndDeletedTrue(Long productId);
 }

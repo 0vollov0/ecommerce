@@ -65,10 +65,10 @@ class OrderServiceTest {
         when(orderRepository.save(any(Order.class))).thenReturn(order);
         when(stockLockRepository.save(any(StockLock.class))).thenReturn(stockLock);
 
-        ResponseEntity<OrderResponse> response = orderService.order(dto);
+        OrderResponse response = orderService.order(dto);
 
-        assertTrue(response.getStatusCode().is2xxSuccessful());
-        assertEquals("Your order has been proceed", Objects.requireNonNull(response.getBody()).getMessage());
+        assertTrue(response.isResult());
+        assertEquals("Your order has been proceed", response.getMessage());
         assertEquals(4000, customer.getAmount());
         assertEquals(2, product.getStock());
         verify(paymentRequestSender, times(1)).sendPaymentRequest(any());
@@ -83,10 +83,10 @@ class OrderServiceTest {
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         when(customerRepository.findById(2L)).thenReturn(Optional.of(customer));
 
-        ResponseEntity<OrderResponse> response = orderService.order(dto);
+        OrderResponse response = orderService.order(dto);
 
-        assertTrue(response.getStatusCode().is4xxClientError());
-        assertEquals("Not enough stock to order", Objects.requireNonNull(response.getBody()).getMessage());
+        assertFalse(response.isResult());
+        assertEquals("Not enough stock to order", response.getMessage());
     }
 
     @Test
@@ -98,10 +98,10 @@ class OrderServiceTest {
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         when(customerRepository.findById(2L)).thenReturn(Optional.of(customer));
 
-        ResponseEntity<OrderResponse> response = orderService.order(dto);
+        OrderResponse response = orderService.order(dto);
 
-        assertTrue(response.getStatusCode().is4xxClientError());
-        assertEquals("Not enough amount to order", Objects.requireNonNull(response.getBody()).getMessage());
+        assertFalse(response.isResult());
+        assertEquals("Not enough amount to order", response.getMessage());
     }
 
     @Test

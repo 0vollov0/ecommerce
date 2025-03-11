@@ -6,6 +6,7 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class RequestPagingDto {
     @Min(value = 0, message = "page should be positive number including 0")
     private int page;

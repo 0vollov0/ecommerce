@@ -37,9 +37,9 @@ public class OrderService {
     public OrderResponse order(OrderDto dto) {
         Customer customer = this.customerRepository.findById(dto.getCustomer_id()).orElseThrow(EntityNotFoundException::new);
         Product product = this.productRepository.findById(dto.getProduct_id()).orElseThrow(EntityNotFoundException::new);
-        if(product.getStock() < dto.getQuantity()) return new OrderResponse(false, "Not enough stock to order");
+        if(product.getStock() < dto.getQuantity()) return OrderResponse.builder().result(false).message("Not enough stock to order").build();
         int salesPrice = dto.getQuantity()*product.getSalesPrice();
-        if(salesPrice > customer.getAmount()) return new OrderResponse(false, "Not enough amount to order");
+        if(salesPrice > customer.getAmount()) return OrderResponse.builder().result(false).message("Not enough amount to order").build();;
 
         Order newOrder = Order.builder()
                 .customer(customer)
@@ -49,7 +49,7 @@ public class OrderService {
                 .salesPrice(salesPrice)
                 .build();
 
-        orderRepository.save(newOrder);
+        Order order = orderRepository.save(newOrder);
         product.setStock(product.getStock() - dto.getQuantity());
         productRepository.save(product);
         StockLock stockLock = StockLock.builder()
@@ -63,7 +63,7 @@ public class OrderService {
         customerRepository.save(customer);
         stockLockRepository.save(stockLock);
         this.paymentRequestSender.sendPaymentRequest(stockLock.toPaymentRequestDto());
-        return new OrderResponse(true, "Your order has been proceed");
+        return new OrderResponse(order.getOrderId(),true, "Your order has been proceed");
     }
 
     public Page<Order> find(RequestPagingDto dto) {

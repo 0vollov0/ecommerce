@@ -31,7 +31,7 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<OrderResponse> order(@RequestBody @Valid OrderDto dto) throws BadRequestException {
         OrderResponse response = orderService.order(dto);
-        if (response.isResult()) return ResponseEntity.ok(response);
+        if (response.isResult()) return ResponseEntity.status(HttpStatus.CREATED).body(response);
         else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 

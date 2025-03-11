@@ -42,7 +42,7 @@ class OrderControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(dto);
 
-        OrderResponse response = new OrderResponse(true, "Order placed successfully");
+        OrderResponse response = new OrderResponse(1L, true, "Order placed successfully");
 
         when(orderService.order(any(OrderDto.class))).thenReturn(response);
         mockMvc.perform(post("/orders")
@@ -61,7 +61,7 @@ class OrderControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(dto);
 
-        OrderResponse response = new OrderResponse(false, "Not enough stock to order");
+        OrderResponse response = new OrderResponse(1L,false, "Not enough stock to order");
 
         when(orderService.order(any(OrderDto.class))).thenReturn(response);
 

@@ -42,7 +42,6 @@ public class CustomerService {
 
     @Transactional
     public void delete(Long id) {
-        Customer customer = customerRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        customer.setDeleted(true);
+        customerRepository.deleteById(id);
     }
 }

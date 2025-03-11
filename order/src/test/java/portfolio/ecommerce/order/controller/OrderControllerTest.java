@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import portfolio.ecommerce.order.dto.CreateCustomerDto;
 import portfolio.ecommerce.order.dto.OrderDto;
 import portfolio.ecommerce.order.dto.RequestPagingDto;
 import portfolio.ecommerce.order.entity.Order;
@@ -22,11 +21,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-
-import java.util.Collections;
 
 @ExtendWith(MockitoExtension.class)
 class OrderControllerTest {
@@ -83,9 +77,6 @@ class OrderControllerTest {
 
     @Test
     void getOrders() throws Exception {
-        RequestPagingDto dto = new RequestPagingDto(0, 10);
-        Page<Order> page = new PageImpl<>(Collections.singletonList(new Order()));
-
         when(orderService.find(any(RequestPagingDto.class))).thenReturn(any());
 
         mockMvc.perform(get("/orders")

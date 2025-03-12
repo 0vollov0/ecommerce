@@ -50,6 +50,12 @@ class PaymentServiceTest {
     @Mock
     private PaymentTransactionService paymentTransactionService;
 
+    @Mock
+    private RedisService redisService;
+
+    @Mock
+    private UtilService utilService;
+
     private PaymentService paymentService;
 
     private RequestPaymentDto requestPaymentDto;
@@ -87,8 +93,7 @@ class PaymentServiceTest {
         Mockito.lenient().when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         Mockito.lenient().when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
 
-        paymentService = new PaymentService(stockLockRepository, orderRepository, paymentResultSender, paymentTransactionService);
-
+        paymentService = new PaymentService(stockLockRepository, orderRepository, paymentResultSender, paymentTransactionService, redisService, utilService);
     }
 
     @Test

@@ -7,4 +7,5 @@ import portfolio.ecommerce.payment.entity.Seller;
 
 public interface SellerRepository extends JpaRepository<Seller, Long> {
     Page<Seller> findAllByDeleted(boolean deleted, Pageable pageable);
+    boolean existsBySellerIdAndDeletedTrue(Long customerId);
 }

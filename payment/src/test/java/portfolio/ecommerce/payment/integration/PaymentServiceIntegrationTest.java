@@ -19,6 +19,8 @@ import portfolio.ecommerce.payment.repository.OrderRepository;
 import portfolio.ecommerce.payment.repository.StockLockRepository;
 import portfolio.ecommerce.payment.service.PaymentService;
 import portfolio.ecommerce.payment.service.PaymentTransactionService;
+import portfolio.ecommerce.payment.service.RedisService;
+import portfolio.ecommerce.payment.service.UtilService;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -40,6 +42,12 @@ class PaymentServiceIntegrationTest {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    private RedisService redisService;
+
+    @Autowired
+    private UtilService utilService;
+
     @Mock
     private PaymentTransactionService paymentTransactionService;
 
@@ -54,6 +62,8 @@ class PaymentServiceIntegrationTest {
     @Test
     void processPayment_shouldProcessSuccessfully_whenNotExpired() throws Exception {
         StockLock stockLock = stockLockRepository.findById(existingId).orElseThrow(EntityNotFoundException::new);
+        String uniqueKey = utilService.generateHash(String.valueOf(stockLock.getOrder().getCustomer().getCustomerId() + stockLock.getProduct().getProductId() + stockLock.getQuantity()));
+
         RequestPaymentDto requestPaymentDto = stockLock.toPaymentRequestDto();
 
         paymentService.processPayment(requestPaymentDto);
@@ -67,6 +77,7 @@ class PaymentServiceIntegrationTest {
         assertThat(paymentResultDto)
                 .extracting(PaymentResultDto::getOrderId, PaymentResultDto::isSucceed)
                 .containsExactly(expectedResultDto.getOrderId(), expectedResultDto.isSucceed());
+        assertThat(redisService.getData(uniqueKey)).isNull();
     }
 
     @Test

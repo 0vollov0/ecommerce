@@ -32,6 +32,7 @@ dependencies {
 	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.3.0'
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-amqp
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-amqp', version: '3.4.2'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {

@@ -21,10 +21,12 @@ public class PaymentService {
     private final OrderRepository orderRepository;
     private final PaymentResultSender paymentResultSender;
     private final PaymentTransactionService paymentTransactionService;
+    private final RedisService redisService;
+    private final UtilService utilService;
 
     @Transactional
     @RabbitListener(queues = RabbitConfig.PAYMENT_REQUEST_QUEUE)
-    public void processPayment(RequestPaymentDto dto) throws Exception {
+    public void processPayment(RequestPaymentDto dto) {
         try {
             LocalDateTime now = LocalDateTime.now();
             boolean isExpired = now.isAfter(dto.getExpiredAt());
@@ -38,10 +40,11 @@ public class PaymentService {
         } catch (Exception e) {
             Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(EntityNotFoundException::new);
             order.setState(2);
+
             orderRepository.save(order);
             PaymentResultDto resultDto = new PaymentResultDto(false, dto.getOrderId());
             paymentResultSender.sendPaymentResult(resultDto);
-            throw e;
+            redisService.deleteData(utilService.generateHash(String.valueOf(order.getCustomer().getCustomerId() + order.getProduct().getProductId() + order.getQuantity())));
         }
     }
 }

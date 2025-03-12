@@ -37,8 +37,7 @@ public class OrderController {
             System.out.println("Using CachedRequest in Controller");
         }
         OrderResponse response = orderService.order(dto);
-        if (response.isResult()) return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @ApiErrorResponses

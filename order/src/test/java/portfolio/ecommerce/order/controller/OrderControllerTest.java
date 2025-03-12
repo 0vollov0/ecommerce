@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -42,14 +43,13 @@ class OrderControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(dto);
 
-        OrderResponse response = new OrderResponse(1L, true, "Order placed successfully");
+        OrderResponse response = new OrderResponse(HttpStatus.CREATED ,1L, "Order placed successfully");
 
         when(orderService.order(any(OrderDto.class))).thenReturn(response);
         mockMvc.perform(post("/orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.result").value(true))
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.message").value("Order placed successfully"));
 
         verify(orderService, times(1)).order(any(OrderDto.class));
@@ -61,7 +61,7 @@ class OrderControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(dto);
 
-        OrderResponse response = new OrderResponse(1L,false, "Not enough stock to order");
+        OrderResponse response = new OrderResponse(HttpStatus.BAD_REQUEST,1L, "Not enough stock to order");
 
         when(orderService.order(any(OrderDto.class))).thenReturn(response);
 
@@ -69,7 +69,6 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.result").value(false))
                 .andExpect(jsonPath("$.message").value("Not enough stock to order"));
 
         verify(orderService, times(1)).order(any(OrderDto.class));

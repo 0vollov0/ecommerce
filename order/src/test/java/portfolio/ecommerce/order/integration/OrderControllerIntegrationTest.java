@@ -86,7 +86,7 @@ public class OrderControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.result").isBoolean())
+                .andExpect(jsonPath("$.status").value("CREATED"))
                 .andExpect(jsonPath("$.orderId").isNumber())
                 .andReturn();
 

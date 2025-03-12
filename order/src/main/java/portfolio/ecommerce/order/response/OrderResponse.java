@@ -1,6 +1,7 @@
 package portfolio.ecommerce.order.response;
 
 import lombok.*;
+import org.springframework.http.HttpStatus;
 import portfolio.ecommerce.order.entity.Order;
 
 @Getter
@@ -8,13 +9,13 @@ import portfolio.ecommerce.order.entity.Order;
 @NoArgsConstructor
 public class OrderResponse {
     private Long orderId;
-    private boolean result;
     private String message;
+    private HttpStatus status;
 
     @Builder
-    public OrderResponse(Long orderId, boolean result, String message) {
+    public OrderResponse(HttpStatus status, Long orderId, String message) {
         this.orderId = orderId;
-        this.result = result;
         this.message = message;
+        this.status = status;
     }
 }

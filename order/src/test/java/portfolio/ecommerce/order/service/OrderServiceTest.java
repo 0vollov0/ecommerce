@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import portfolio.ecommerce.order.dto.OrderDto;
 import portfolio.ecommerce.order.dto.RequestPagingDto;
@@ -45,11 +46,17 @@ class OrderServiceTest {
     @Mock
     private PaymentRequestSender paymentRequestSender;
 
+    @Mock
+    private RedisService redisService;
+
+    @Mock
+    private UtilService utilService;
+
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(productRepository, orderRepository, customerRepository, stockLockRepository, paymentRequestSender);
+        orderService = new OrderService(productRepository, orderRepository, customerRepository, stockLockRepository, paymentRequestSender, redisService, utilService);
     }
 
     @Test
@@ -64,10 +71,12 @@ class OrderServiceTest {
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         when(orderRepository.save(any(Order.class))).thenReturn(order);
         when(stockLockRepository.save(any(StockLock.class))).thenReturn(stockLock);
+        when(utilService.generateHash(String.valueOf(dto.getCustomer_id() + dto.getProduct_id() + dto.getQuantity()))).thenReturn("TEST_HASH_CODE");
+        when(redisService.lockData("TEST_HASH_CODE", "processed", 1)).thenReturn(true);
 
         OrderResponse response = orderService.order(dto);
 
-        assertTrue(response.isResult());
+        assertEquals(HttpStatus.CREATED, response.getStatus());
         assertEquals("Your order has been proceed", response.getMessage());
         assertEquals(4000, customer.getAmount());
         assertEquals(2, product.getStock());
@@ -83,9 +92,12 @@ class OrderServiceTest {
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         when(customerRepository.findById(2L)).thenReturn(Optional.of(customer));
 
+        when(utilService.generateHash(String.valueOf(dto.getCustomer_id() + dto.getProduct_id() + dto.getQuantity()))).thenReturn("TEST_HASH_CODE");
+        when(redisService.lockData("TEST_HASH_CODE", "processed", 1)).thenReturn(true);
+
         OrderResponse response = orderService.order(dto);
 
-        assertFalse(response.isResult());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
         assertEquals("Not enough stock to order", response.getMessage());
     }
 
@@ -98,9 +110,12 @@ class OrderServiceTest {
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         when(customerRepository.findById(2L)).thenReturn(Optional.of(customer));
 
+        when(utilService.generateHash(String.valueOf(dto.getCustomer_id() + dto.getProduct_id() + dto.getQuantity()))).thenReturn("TEST_HASH_CODE");
+        when(redisService.lockData("TEST_HASH_CODE", "processed", 1)).thenReturn(true);
+
         OrderResponse response = orderService.order(dto);
 
-        assertFalse(response.isResult());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
         assertEquals("Not enough amount to order", response.getMessage());
     }
 
@@ -112,6 +127,7 @@ class OrderServiceTest {
         when(orderRepository.findAll(any(PageRequest.class))).thenReturn(page);
 
         Page<Order> result = orderService.find(dto);
+
 
         assertNotNull(result);
         assertFalse(result.isEmpty());

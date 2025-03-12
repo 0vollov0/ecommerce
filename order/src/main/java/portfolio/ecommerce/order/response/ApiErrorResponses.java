@@ -14,6 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @ApiResponses(value = {
         @ApiResponse(responseCode = "400", description = "BadRequest", content = @Content(mediaType = "text/plain", schema = @Schema(type = "string", example = "BadRequest"))),
+        @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(mediaType = "text/plain", schema = @Schema(type = "string", example = "Conflict"))),
         @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "text/plain", schema = @Schema(type = "string", example = "Internal Server Error")))
 })
 public @interface ApiErrorResponses { }

@@ -1,6 +1,7 @@
 package portfolio.ecommerce.order.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,13 +34,20 @@ public class OrderService {
     private final StockLockRepository stockLockRepository;
     private final PaymentRequestSender paymentRequestSender;
 
+    private final RedisService redisService;
+    private final UtilService utilService;
+
     @Transactional()
     public OrderResponse order(OrderDto dto) {
+        String uniqueKey = utilService.generateHash(String.valueOf(dto.getCustomer_id() + dto.getProduct_id() + dto.getQuantity()));
+        Boolean acquired = redisService.lockData(uniqueKey, "processed", 1);
+        if (Boolean.FALSE.equals(acquired))  return OrderResponse.builder().status(HttpStatus.CONFLICT).message("Conflict order").build();
+
         Customer customer = this.customerRepository.findById(dto.getCustomer_id()).orElseThrow(EntityNotFoundException::new);
         Product product = this.productRepository.findById(dto.getProduct_id()).orElseThrow(EntityNotFoundException::new);
-        if(product.getStock() < dto.getQuantity()) return OrderResponse.builder().result(false).message("Not enough stock to order").build();
+        if(product.getStock() < dto.getQuantity()) return OrderResponse.builder().status(HttpStatus.BAD_REQUEST).message("Not enough stock to order").build();
         int salesPrice = dto.getQuantity()*product.getSalesPrice();
-        if(salesPrice > customer.getAmount()) return OrderResponse.builder().result(false).message("Not enough amount to order").build();;
+        if(salesPrice > customer.getAmount()) return OrderResponse.builder().status(HttpStatus.BAD_REQUEST).message("Not enough amount to order").build();;
 
         Order newOrder = Order.builder()
                 .customer(customer)
@@ -63,7 +71,7 @@ public class OrderService {
         customerRepository.save(customer);
         stockLockRepository.save(stockLock);
         this.paymentRequestSender.sendPaymentRequest(stockLock.toPaymentRequestDto());
-        return new OrderResponse(order.getOrderId(),true, "Your order has been proceed");
+        return new OrderResponse(HttpStatus.CREATED, order.getOrderId(), "Your order has been proceed");
     }
 
     public Page<Order> find(RequestPagingDto dto) {

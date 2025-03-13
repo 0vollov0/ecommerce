@@ -46,7 +46,7 @@ public class OrderService {
         Customer customer = this.customerRepository.findById(dto.getCustomer_id()).orElseThrow(EntityNotFoundException::new);
         Product product = this.productRepository.findById(dto.getProduct_id()).orElseThrow(EntityNotFoundException::new);
         if(product.getStock() < dto.getQuantity()) return OrderResponse.builder().status(HttpStatus.BAD_REQUEST).message("Not enough stock to order").build();
-        int salesPrice = dto.getQuantity()*product.getSalesPrice();
+        int salesPrice = product.getSalesPrice();
         if(salesPrice > customer.getAmount()) return OrderResponse.builder().status(HttpStatus.BAD_REQUEST).message("Not enough amount to order").build();;
 
         Order newOrder = Order.builder()

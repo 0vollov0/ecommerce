@@ -33,4 +33,11 @@ public class Customer extends BaseEntity {
         this.amount = amount;
         this.deleted = deleted;
     }
+
+    public void decreaseAmount(int amount) {
+        if (this.amount < amount) {
+            throw new IllegalStateException("Not enough balance.");
+        }
+        this.amount -= amount;
+    }
 }

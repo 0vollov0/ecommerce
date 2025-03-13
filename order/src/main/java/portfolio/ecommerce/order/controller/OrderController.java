@@ -29,7 +29,6 @@ public class OrderController {
     @ApiErrorResponses
     @PostMapping
     public ResponseEntity<OrderResponse> order(HttpServletRequest request,  @RequestBody @Valid OrderDto dto) throws BadRequestException {
-        log.info("{}", dto.getCustomer_id());
         OrderResponse response = orderService.order(dto);
         return ResponseEntity.status(response.getStatus()).body(response);
     }

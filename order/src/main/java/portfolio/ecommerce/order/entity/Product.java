@@ -62,4 +62,11 @@ public class Product extends BaseEntity {
         this.seller = seller;
         this.deleted = deleted;
     }
+
+    public void decreaseStock(int quantity) {
+        if (this.stock < quantity) {
+            throw new IllegalStateException("Stock is not enough to process the order.");
+        }
+        this.stock -= quantity;
+    }
 }

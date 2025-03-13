@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import portfolio.ecommerce.payment.dto.RequestPaymentDto;
 
@@ -30,7 +29,6 @@ public class StockLock extends portfolio.ecommerce.payment.entity.BaseEntity {
     @JoinColumn(name = "product_id", nullable = false)
     private portfolio.ecommerce.payment.entity.Product product;
 
-    @CreatedDate
     @Column(nullable = false)
     private LocalDateTime expiredAt;
 

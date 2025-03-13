@@ -35,7 +35,7 @@ public class PaymentService {
             order.setState(isExpired ? 2 : 1);
             orderRepository.save(order);
             stockLockRepository.deleteById(dto.getStockLockId());
-            PaymentResultDto resultDto = new PaymentResultDto(true, dto.getOrderId());
+            PaymentResultDto resultDto = new PaymentResultDto(!isExpired, dto.getOrderId());
             paymentResultSender.sendPaymentResult(resultDto);
         } catch (Exception e) {
             Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(EntityNotFoundException::new);

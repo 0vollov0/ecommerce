@@ -30,7 +30,6 @@ public class StockLock extends BaseEntity {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @CreatedDate
     @Column(nullable = false)
     private LocalDateTime expiredAt;
 

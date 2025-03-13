@@ -2,17 +2,14 @@ package portfolio.ecommerce.order.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import portfolio.ecommerce.order.CachingRequestWrapper;
 import portfolio.ecommerce.order.dto.OrderDto;
 import portfolio.ecommerce.order.dto.RequestPagingDto;
 import portfolio.ecommerce.order.entity.Order;
@@ -32,10 +29,7 @@ public class OrderController {
     @ApiErrorResponses
     @PostMapping
     public ResponseEntity<OrderResponse> order(HttpServletRequest request,  @RequestBody @Valid OrderDto dto) throws BadRequestException {
-        CachingRequestWrapper cachedRequest = (CachingRequestWrapper) request.getAttribute("cachedRequest");
-        if (cachedRequest != null) {
-            System.out.println("Using CachedRequest in Controller");
-        }
+        log.info("{}", dto.getCustomer_id());
         OrderResponse response = orderService.order(dto);
         return ResponseEntity.status(response.getStatus()).body(response);
     }

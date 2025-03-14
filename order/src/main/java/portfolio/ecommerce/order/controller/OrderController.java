@@ -7,6 +7,7 @@ import org.apache.coyote.BadRequestException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class OrderController {
 
     @ApiErrorResponses
     @PostMapping
-    public ResponseEntity<OrderResponse> order(HttpServletRequest request,  @RequestBody @Valid OrderDto dto) throws BadRequestException {
+    public ResponseEntity<OrderResponse> order(@RequestBody @Valid OrderDto dto) throws BadRequestException {
         OrderResponse response = orderService.order(dto);
         return ResponseEntity.status(response.getStatus()).body(response);
     }

@@ -1,0 +1,17 @@
+config:
+  target: "http://localhost:8080"
+  phases:
+    - duration: 10
+      arrivalRate: 300
+  processor: "./custom_id_generator.js"
+
+scenarios:
+  - flow:
+      - function: getNextCustomerId
+      - post:
+          url: "/orders"
+          json:
+            customer_id: "{{ customer_id }}"
+            product_id: 3
+            quantity: 1
+

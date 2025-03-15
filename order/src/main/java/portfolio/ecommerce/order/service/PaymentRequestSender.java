@@ -16,6 +16,6 @@ public class PaymentRequestSender {
 
     public void sendPaymentRequest(RequestPaymentDto dto) {
         rabbitTemplate.convertAndSend(RabbitConfig.PAYMENT_REQUEST_QUEUE, dto);
-        log.info("📨 결제 요청 발행 완료: {}", dto);
+//        log.info("📨 결제 요청 발행 완료: {}", dto);
     }
 }

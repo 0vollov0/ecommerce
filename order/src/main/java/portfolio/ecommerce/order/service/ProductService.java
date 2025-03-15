@@ -1,6 +1,8 @@
 package portfolio.ecommerce.order.service;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import portfolio.ecommerce.order.entity.Category;
 import portfolio.ecommerce.order.entity.Product;
 import portfolio.ecommerce.order.entity.Seller;
 import portfolio.ecommerce.order.repository.CategoryRepository;
+import portfolio.ecommerce.order.repository.OrderRepository;
 import portfolio.ecommerce.order.repository.ProductRepository;
 import portfolio.ecommerce.order.repository.SellerRepository;
 
@@ -24,20 +27,26 @@ import java.util.Optional;
 public class ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final SellerRepository sellerRepository;
+    private final EntityManager entityManager;
 
     public Product create(CreateProductDto dto) {
-        Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow(EntityNotFoundException::new);
-        Seller seller = sellerRepository.findById(dto.getSellerId()).orElseThrow(EntityNotFoundException::new);
-        return productRepository.save(
-                Product.builder()
+//        Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow(EntityNotFoundException::new);
+//        Seller seller = sellerRepository.findById(dto.getSellerId()).orElseThrow(EntityNotFoundException::new);
+        Category categoryRef = entityManager.getReference(Category.class, dto.getCategoryId());
+        Seller sellerRef = entityManager.getReference(Seller.class, dto.getSellerId());
+
+        Product product = Product.builder()
                 .name(dto.getName())
-                .category(category)
-                .seller(seller)
+                .categoryId(dto.getCategoryId())
+                .sellerId(dto.getSellerId())
                 .stock(dto.getStock())
                 .salesPrice(dto.getSalesPrice())
-                .build()
-        );
+                .build();
+
+        product.setCategory(categoryRef);
+        product.setSeller(sellerRef);
+
+        return productRepository.save(product);
     }
 
     public Optional<Product> findById(Long id) {

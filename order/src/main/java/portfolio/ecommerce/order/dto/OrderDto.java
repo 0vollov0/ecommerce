@@ -1,15 +1,13 @@
 package portfolio.ecommerce.order.dto;
 
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class OrderDto {
     @Positive
     private Long product_id;

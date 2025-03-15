@@ -1,5 +1,6 @@
 package portfolio.ecommerce.order.service;
 
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,28 +38,38 @@ class ProductServiceTest {
     @Mock
     private SellerRepository sellerRepository;
 
+    @Mock
+    private EntityManager entityManager;
+
     private ProductService productService;
+
+    private Long productId = 1L;
+    private Long customerId = 2L;
+    private Long sellerId = 3L;
+    private Long categoryId = 4L;
 
     @BeforeEach
     void setUp() {
-        productService = new ProductService(productRepository, categoryRepository, sellerRepository);
+        productService = new ProductService(productRepository, categoryRepository, entityManager);
     }
 
     @Test
     void createProduct() {
-        CreateProductDto dto = new CreateProductDto(1L, 2L, "TEST_PRODUCT", 100, 5000);
-        Category category = Category.builder().categoryId(1L).name("TEST_CATEGORY").build();
-        Seller seller = Seller.builder().sellerId(2L).name("TEST_SELLER").build();
+        CreateProductDto dto = new CreateProductDto(categoryId, sellerId, "TEST_PRODUCT", 100, 5000);
+        Category categoryRef = entityManager.getReference(Category.class, dto.getCategoryId());
+        Seller sellerRef = entityManager.getReference(Seller.class, dto.getSellerId());
+
         Product product = Product.builder()
                 .name(dto.getName())
-                .category(category)
-                .seller(seller)
+                .categoryId(productId)
+                .sellerId(sellerId)
                 .stock(dto.getStock())
                 .salesPrice(dto.getSalesPrice())
                 .build();
 
-        when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
-        when(sellerRepository.findById(2L)).thenReturn(Optional.of(seller));
+        product.setCategory(categoryRef);
+        product.setSeller(sellerRef);
+
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
         Product savedProduct = productService.create(dto);

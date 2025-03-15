@@ -59,12 +59,10 @@ class SseControllerIT {
 
     @Test
     void testConnect_AlreadyConnected() throws Exception {
-        // 첫 번째 연결
         mockMvc.perform(get("/sse")
                         .param("customerId", existingCustomerId.toString()))
                 .andExpect(status().isConflict());
 
-        // 두 번째 연결 시도 (이미 연결된 상태)
         mockMvc.perform(get("/sse")
                         .param("customerId", existingCustomerId.toString()))
                 .andExpect(status().isConflict())

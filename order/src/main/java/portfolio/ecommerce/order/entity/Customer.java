@@ -36,7 +36,7 @@ public class Customer extends BaseEntity {
 
     public void decreaseAmount(int amount) {
         if (this.amount < amount) {
-            throw new IllegalStateException("Not enough balance.");
+            throw new IllegalStateException("Not enough amount to order");
         }
         this.amount -= amount;
     }

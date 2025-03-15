@@ -22,11 +22,19 @@ public class StockLock extends BaseEntity {
     @Column(nullable = false)
     private Long stockLockId;
 
-    @ManyToOne
+    // ✅ order_id 값을 직접 저장하여 추가적인 SELECT 방지
+    @Column(name = "order_id", insertable = false, updatable = false)
+    private Long orderId;
+
+    @ManyToOne(fetch = FetchType.LAZY)  // ✅ LAZY 설정으로 JOIN 방지
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @ManyToOne
+    // ✅ product_id 값을 직접 저장하여 추가적인 SELECT 방지
+    @Column(name = "product_id", insertable = false, updatable = false)
+    private Long productId;
+
+    @ManyToOne(fetch = FetchType.LAZY)  // ✅ LAZY 설정으로 JOIN 방지
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
@@ -40,15 +48,20 @@ public class StockLock extends BaseEntity {
     private int salesPrice;
 
     @Builder
-    public StockLock(Order order, Product product, int salesPrice, int quantity, LocalDateTime expiredAt) {
-        this.order = order;
-        this.product = product;
+    public StockLock(Long stockLockId, Long orderId, Long productId, int salesPrice, int quantity, LocalDateTime expiredAt) {
+        this.stockLockId = stockLockId;
+        this.orderId = orderId;
+        this.productId = productId;
         this.quantity = quantity;
         this.expiredAt = expiredAt;
         this.salesPrice = salesPrice;
+
+        // 연관 엔티티는 null로 설정 (Lazy 로딩 방지)
+        this.order = null;
+        this.product = null;
     }
 
     public RequestPaymentDto toPaymentRequestDto() {
-        return new RequestPaymentDto(stockLockId, order.getOrderId(), product.getProductId(), expiredAt, quantity, salesPrice);
+        return new RequestPaymentDto(stockLockId, orderId, productId, expiredAt, quantity, salesPrice);
     }
 }

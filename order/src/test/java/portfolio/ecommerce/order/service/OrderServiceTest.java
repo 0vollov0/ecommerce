@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import portfolio.ecommerce.order.dto.OrderDto;
 import portfolio.ecommerce.order.dto.RequestPagingDto;
 import portfolio.ecommerce.order.entity.*;
@@ -21,7 +20,6 @@ import portfolio.ecommerce.order.response.OrderResponse;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,6 +52,13 @@ class OrderServiceTest {
 
     private OrderService orderService;
 
+    private Long productId = 1L;
+    private Long customerId = 2L;
+    private Long sellerId = 3L;
+    private Long categoryId = 4L;
+    private Long orderId = 5L;
+
+
     @BeforeEach
     void setUp() {
         orderService = new OrderService(productRepository, orderRepository, customerRepository, stockLockRepository, paymentRequestSender, redisService, utilService);
@@ -61,14 +66,14 @@ class OrderServiceTest {
 
     @Test
     void orderProduct() {
-        OrderDto dto = new OrderDto(1L, 2L, 3);
-        Customer customer = Customer.builder().customerId(2L).name("TEST_CUSTOMER").amount(10000).build();
-        Product product = Product.builder().productId(1L).seller(Seller.builder().name("TEST_SELLER").build()).stock(5).salesPrice(2000).build();
-        Order order = Order.builder().customer(customer).seller(product.getSeller()).product(product).quantity(dto.getQuantity()).salesPrice(6000).build();
-        StockLock stockLock = StockLock.builder().order(order).product(product).salesPrice(6000).quantity(dto.getQuantity()).expiredAt(LocalDateTime.now().plusMinutes(3)).build();
+        OrderDto dto = new OrderDto(productId, customerId, 3);
+        Customer customer = Customer.builder().customerId(customerId).name("TEST_CUSTOMER").amount(10000).build();
+        Product product = Product.builder().productId(productId).sellerId(sellerId).stock(5).salesPrice(2000).build();
+        Order order = Order.builder().orderId(orderId).customerId(customer.getCustomerId()).sellerId(product.getSellerId()).productId(product.getProductId()).quantity(dto.getQuantity()).salesPrice(6000).build();
+        StockLock stockLock = StockLock.builder().orderId(order.getOrderId()).productId(product.getProductId()).salesPrice(6000).quantity(dto.getQuantity()).expiredAt(LocalDateTime.now().plusMinutes(3)).build();
 
-        when(customerRepository.findById(2L)).thenReturn(Optional.of(customer));
-        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
+        when(productRepository.findByIdForUpdate(productId)).thenReturn(Optional.of(product));
         when(orderRepository.save(any(Order.class))).thenReturn(order);
         when(stockLockRepository.save(any(StockLock.class))).thenReturn(stockLock);
         when(utilService.generateHash(String.valueOf(dto.getCustomer_id() + dto.getProduct_id() + dto.getQuantity()))).thenReturn("TEST_HASH_CODE");
@@ -85,15 +90,12 @@ class OrderServiceTest {
 
     @Test
     void orderProduct_NotEnoughStock() {
-        OrderDto dto = new OrderDto(1L, 2L, 10);
-        Product product = Product.builder().productId(1L).seller(Seller.builder().name("TEST_SELLER").build()).stock(5).salesPrice(2000).build();
-        Customer customer = Customer.builder().customerId(2L).name("TEST_CUSTOMER").amount(10000).build();
-
-        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-        when(customerRepository.findById(2L)).thenReturn(Optional.of(customer));
+        OrderDto dto = new OrderDto(productId, customerId, 10);
+        Product product = Product.builder().productId(productId).categoryId(categoryId).sellerId(sellerId).stock(1).salesPrice(2000).name("TEST_PRODUCT").build();
 
         when(utilService.generateHash(String.valueOf(dto.getCustomer_id() + dto.getProduct_id() + dto.getQuantity()))).thenReturn("TEST_HASH_CODE");
         when(redisService.lockData("TEST_HASH_CODE", "processed", 1)).thenReturn(true);
+        when(productRepository.findByIdForUpdate(productId)).thenReturn(Optional.of(product));
 
         OrderResponse response = orderService.order(dto);
 
@@ -103,15 +105,14 @@ class OrderServiceTest {
 
     @Test
     void orderProduct_NotEnoughAmount() {
-        OrderDto dto = new OrderDto(1L, 2L, 10);
-        Product product = Product.builder().productId(1L).seller(Seller.builder().name("TEST_SELLER").build()).stock(10).salesPrice(2000).build();
-        Customer customer = Customer.builder().customerId(2L).name("TEST_CUSTOMER").amount(5000).build();
-
-        when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-        when(customerRepository.findById(2L)).thenReturn(Optional.of(customer));
+        OrderDto dto = new OrderDto(productId, customerId, 10);
+        Product product = Product.builder().productId(productId).sellerId(sellerId).stock(10).salesPrice(2000).build();
+        Customer customer = Customer.builder().customerId(customerId).name("TEST_CUSTOMER").amount(5000).build();
 
         when(utilService.generateHash(String.valueOf(dto.getCustomer_id() + dto.getProduct_id() + dto.getQuantity()))).thenReturn("TEST_HASH_CODE");
         when(redisService.lockData("TEST_HASH_CODE", "processed", 1)).thenReturn(true);
+        when(productRepository.findByIdForUpdate(productId)).thenReturn(Optional.of(product));
+        when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
 
         OrderResponse response = orderService.order(dto);
 

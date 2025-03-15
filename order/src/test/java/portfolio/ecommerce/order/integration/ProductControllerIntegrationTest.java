@@ -2,6 +2,9 @@ package portfolio.ecommerce.order.integration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,16 +59,19 @@ public class ProductControllerIntegrationTest {
 
     @BeforeEach()
     void setUp() {
-        category = categoryRepository.save(Category.builder().name("1").build());
-        seller = sellerRepository.save(Seller.builder().name("1").build());
+        category = categoryRepository.save(Category.builder().name("TEST_CATEGORY").build());
+        seller = sellerRepository.save(Seller.builder().name("TEST_SELLER").build());
     }
 
     @AfterEach
+    @Transactional
     void cleanUp() {
         shouldDeleteIds.forEach((id) -> productRepository.deleteById(id));
+        productRepository.flush();
+        shouldDeleteIds.clear();
+
         categoryRepository.deleteById(category.getCategoryId());
         sellerRepository.deleteById(seller.getSellerId());
-        shouldDeleteIds.clear();
     }
 
     @Test
@@ -78,8 +84,8 @@ public class ProductControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.category.categoryId").value(category.getCategoryId()))
-                .andExpect(jsonPath("$.seller.sellerId").value(seller.getSellerId()))
+                .andExpect(jsonPath("$.categoryId").value(category.getCategoryId()))
+                .andExpect(jsonPath("$.sellerId").value(seller.getSellerId()))
                 .andReturn();
 
         String responseJson = result.getResponse().getContentAsString();
@@ -93,12 +99,18 @@ public class ProductControllerIntegrationTest {
 
     @Test
     void updateProduct() throws Exception {
-        Product product = productRepository.save(Product.builder().category(category).seller(seller).name("12").salesPrice(100).stock(5000).build());
+        Product savedProduct = productService.create(
+                CreateProductDto.builder().name("TEST_PRODUCT")
+                .categoryId(category.getCategoryId())
+                .sellerId(seller.getSellerId())
+                .stock(5000)
+                .salesPrice(1000).build()
+        );
         UpdateProductDto dto = UpdateProductDto.builder().categoryId(category.getCategoryId()).name("34").salesPrice(200).stock(3000).build();
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(dto);
 
-        MvcResult result = mockMvc.perform(patch("/products/{id}", product.getProductId())
+        MvcResult result = mockMvc.perform(patch("/products/{id}", savedProduct.getProductId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
@@ -118,12 +130,18 @@ public class ProductControllerIntegrationTest {
 
     @Test
     void deleteProduct() throws Exception {
-        Product product = productRepository.save(Product.builder().category(category).seller(seller).name("12").salesPrice(100).stock(5000).build());
+        Product savedProduct = productService.create(
+                CreateProductDto.builder().name("TEST_PRODUCT")
+                        .categoryId(category.getCategoryId())
+                        .sellerId(seller.getSellerId())
+                        .stock(5000)
+                        .salesPrice(1000).build()
+        );
 
-        mockMvc.perform(delete("/products/{id}", product.getProductId()))
+        mockMvc.perform(delete("/products/{id}", savedProduct.getProductId()))
                 .andExpect(status().isOk());
-        assertTrue(productRepository.existsByProductIdAndDeletedTrue(product.getProductId()));
-        productRepository.deleteById(product.getProductId());
+        assertTrue(productRepository.existsByProductIdAndDeletedTrue(savedProduct.getProductId()));
+        productRepository.deleteById(savedProduct.getProductId());
     }
 
     @Test

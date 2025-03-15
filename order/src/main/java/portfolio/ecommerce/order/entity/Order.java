@@ -15,15 +15,28 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private Long orderId;
 
-    @ManyToOne()
+    // ✅ customer_id, seller_id, product_id 값만 조회하는 getter 추가
+    // ✅ customer_id 값을 직접 저장하여 추가적인 SELECT 방지
+    @Column(name = "customer_id", insertable = false, updatable = false)
+    private Long customerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)  // ✅ LAZY 설정으로 JOIN 방지
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @ManyToOne()
+    // ✅ seller_id 값을 직접 저장하여 추가적인 SELECT 방지
+    @Column(name = "seller_id", insertable = false, updatable = false)
+    private Long sellerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)  // ✅ LAZY 설정으로 JOIN 방지
     @JoinColumn(name = "seller_id", nullable = false)
     private Seller seller;
 
-    @ManyToOne()
+    // ✅ product_id 값을 직접 저장하여 추가적인 SELECT 방지
+    @Column(name = "product_id", insertable = false, updatable = false)
+    private Long productId;
+
+    @ManyToOne(fetch = FetchType.LAZY)  // ✅ LAZY 설정으로 JOIN 방지
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
@@ -38,12 +51,31 @@ public class Order extends BaseEntity {
     private int state;
 
     @Builder
-    public Order(Long orderId, Customer customer, Seller seller, Product product, int quantity, int salesPrice) {
+    public Order(Long orderId, Long customerId, Long sellerId, Long productId, int quantity, int salesPrice) {
         this.orderId = orderId;
-        this.customer = customer;
-        this.seller = seller;
-        this.product = product;
+        this.customerId = customerId;
+        this.sellerId = sellerId;
+        this.productId = productId;
         this.quantity = quantity;
         this.salesPrice = salesPrice;
+
+        // 연관 엔티티는 null로 설정 (Lazy 로딩 방지)
+        this.customer = null;
+        this.seller = null;
+        this.product = null;
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void syncIds() {
+        if (customer != null) {
+            this.customerId = customer.getCustomerId();
+        }
+        if (seller != null) {
+            this.sellerId = seller.getSellerId();
+        }
+        if (product != null) {
+            this.productId = product.getProductId();
+        }
     }
 }

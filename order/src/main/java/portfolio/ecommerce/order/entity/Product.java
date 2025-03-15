@@ -3,10 +3,7 @@ package portfolio.ecommerce.order.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -15,18 +12,29 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class Product extends BaseEntity {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
-    @ManyToOne
+    // ✅ category_id 값을 직접 저장하여 추가적인 SELECT 발생 방지
+    @Column(name = "category_id", insertable = false, updatable = false)
+    private Long categoryId;
+
+    @ManyToOne(fetch = FetchType.LAZY)  // ✅ LAZY 로딩 설정 (JOIN 방지)
     @JoinColumn(name = "category_id", nullable = false)
+    @JsonIgnore
     private Category category;
 
-    @ManyToOne
+    // ✅ seller_id 값을 직접 저장하여 추가적인 SELECT 발생 방지
+    @Column(name = "seller_id", insertable = false, updatable = false)
+    private Long sellerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)  // ✅ LAZY 로딩 설정 (JOIN 방지)
     @JoinColumn(name = "seller_id", nullable = false)
+    @JsonIgnore
     private Seller seller;
 
     @Column
@@ -41,11 +49,11 @@ public class Product extends BaseEntity {
     private int stock;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private Set<Order> orders = new LinkedHashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private Set<StockLock> stockLocks = new LinkedHashSet<>();
 
     @JsonIgnore
@@ -53,14 +61,18 @@ public class Product extends BaseEntity {
     private boolean deleted;
 
     @Builder
-    public Product(Long productId, String name, int salesPrice, int stock, Category category, Seller seller, boolean deleted) {
+    public Product(Long productId, String name, int salesPrice, int stock, Long categoryId, Long sellerId, boolean deleted) {
         this.productId = productId;
         this.name = name;
         this.salesPrice = salesPrice;
         this.stock = stock;
-        this.category = category;
-        this.seller = seller;
+        this.categoryId = categoryId;
+        this.sellerId = sellerId;
         this.deleted = deleted;
+
+        // 연관 엔티티는 null로 설정 (Lazy 로딩 방지)
+        this.category = null;
+        this.seller = null;
     }
 
     public void decreaseStock(int quantity) {
@@ -68,5 +80,16 @@ public class Product extends BaseEntity {
             throw new IllegalStateException("Stock is not enough to process the order.");
         }
         this.stock -= quantity;
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void syncIds() {
+        if (category != null) {
+            this.categoryId = category.getCategoryId();
+        }
+        if (seller != null) {
+            this.sellerId = seller.getSellerId();
+        }
     }
 }

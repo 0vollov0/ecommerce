@@ -59,7 +59,7 @@ public class OrderControllerIntegrationTest {
         customer = customerRepository.save(Customer.builder().name("1").amount(100000).build());
         category = categoryRepository.save(Category.builder().name("1").build());
         seller = sellerRepository.save(Seller.builder().name("1").build());
-        product = productRepository.save(Product.builder().category(category).seller(seller).name("1").salesPrice(10).stock(1000).build());
+        product = productRepository.save(Product.builder().categoryId(category.getCategoryId()).sellerId(seller.getSellerId()).name("1").salesPrice(10).stock(1000).build());
     }
 
     @AfterEach

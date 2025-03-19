@@ -12,27 +12,24 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 public class Product extends BaseEntity {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
-    // ✅ category_id 값을 직접 저장하여 추가적인 SELECT 발생 방지
     @Column(name = "category_id", insertable = false, updatable = false)
     private Long categoryId;
 
-    @ManyToOne(fetch = FetchType.LAZY)  // ✅ LAZY 로딩 설정 (JOIN 방지)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     @JsonIgnore
     private Category category;
 
-    // ✅ seller_id 값을 직접 저장하여 추가적인 SELECT 발생 방지
     @Column(name = "seller_id", insertable = false, updatable = false)
     private Long sellerId;
 
-    @ManyToOne(fetch = FetchType.LAZY)  // ✅ LAZY 로딩 설정 (JOIN 방지)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
     @JsonIgnore
     private Seller seller;
@@ -48,20 +45,20 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private int stock;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-    private Set<Order> orders = new LinkedHashSet<>();
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-    private Set<StockLock> stockLocks = new LinkedHashSet<>();
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+//    private Set<Order> orders = new LinkedHashSet<>();
+//
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+//    private Set<StockLock> stockLocks = new LinkedHashSet<>();
 
     @JsonIgnore
     @Column
     private boolean deleted;
 
     @Builder
-    public Product(Long productId, String name, int salesPrice, int stock, Long categoryId, Long sellerId, boolean deleted) {
+    public Product(Long productId, String name, int salesPrice, int stock, Long categoryId, Long sellerId, boolean deleted, Category category, Seller seller) {
         this.productId = productId;
         this.name = name;
         this.salesPrice = salesPrice;
@@ -70,9 +67,8 @@ public class Product extends BaseEntity {
         this.sellerId = sellerId;
         this.deleted = deleted;
 
-        // 연관 엔티티는 null로 설정 (Lazy 로딩 방지)
-        this.category = null;
-        this.seller = null;
+        this.category = category;
+        this.seller = seller;
     }
 
     public void decreaseStock(int quantity) {
@@ -82,14 +78,14 @@ public class Product extends BaseEntity {
         this.stock -= quantity;
     }
 
-    @PrePersist
-    @PreUpdate
-    private void syncIds() {
-        if (category != null) {
-            this.categoryId = category.getCategoryId();
-        }
-        if (seller != null) {
-            this.sellerId = seller.getSellerId();
-        }
-    }
+//    @PrePersist
+//    @PreUpdate
+//    private void syncIds() {
+//        if (category != null) {
+//            this.categoryId = category.getCategoryId();
+//        }
+//        if (seller != null) {
+//            this.sellerId = seller.getSellerId();
+//        }
+//    }
 }

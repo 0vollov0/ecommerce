@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import portfolio.ecommerce.order.dto.RequestPaymentDto;
 
@@ -22,19 +21,17 @@ public class StockLock extends BaseEntity {
     @Column(nullable = false)
     private Long stockLockId;
 
-    // ✅ order_id 값을 직접 저장하여 추가적인 SELECT 방지
     @Column(name = "order_id", insertable = false, updatable = false)
     private Long orderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)  // ✅ LAZY 설정으로 JOIN 방지
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    // ✅ product_id 값을 직접 저장하여 추가적인 SELECT 방지
     @Column(name = "product_id", insertable = false, updatable = false)
     private Long productId;
 
-    @ManyToOne(fetch = FetchType.LAZY)  // ✅ LAZY 설정으로 JOIN 방지
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
@@ -56,7 +53,6 @@ public class StockLock extends BaseEntity {
         this.expiredAt = expiredAt;
         this.salesPrice = salesPrice;
 
-        // 연관 엔티티는 null로 설정 (Lazy 로딩 방지)
         this.order = null;
         this.product = null;
     }

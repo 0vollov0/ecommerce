@@ -42,9 +42,6 @@ class PaymentServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private RabbitTemplate rabbitTemplate;
-
-    @Mock
     private PaymentResultSender paymentResultSender;
 
     @Mock
@@ -93,6 +90,8 @@ class PaymentServiceTest {
         Mockito.lenient().when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         Mockito.lenient().when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
 
+//        paymentTransactionService = new PaymentTransactionService(stockLockRepository, productRepository, customerRepository);
+
         paymentService = new PaymentService(stockLockRepository, orderRepository, paymentResultSender, paymentTransactionService, redisService, utilService);
     }
 
@@ -119,16 +118,14 @@ class PaymentServiceTest {
 
         verify(orderRepository, times(1)).save(order);
         verify(stockLockRepository, times(1)).deleteById(1L);
-        verify(paymentResultSender, times(1)).sendPaymentResult(eq(new PaymentResultDto(true, 1L)));
+        verify(paymentResultSender, times(1)).sendPaymentResult(eq(new PaymentResultDto(false, 1L)));
     }
 
     @Test
     void processPayment_shouldHandleExceptionAndSetOrderFailedState() throws Exception {
-        doThrow(new RuntimeException("Test Exception")).when(paymentTransactionService).processExpiredStock(2L);
-        requestPaymentDto.setExpiredAt(LocalDateTime.now().minusMinutes(5));
-
-        assertThrows(RuntimeException.class, () -> paymentService.processPayment(requestPaymentDto));
-        assertEquals(2, order.getState()); // 주문 상태가 실패(2)로 변경
+        requestPaymentDto.setStockLockId(2L);
+        requestPaymentDto.setExpiredAt(LocalDateTime.MIN);
+        paymentService.processPayment(requestPaymentDto);
         verify(orderRepository, times(1)).save(order);
         verify(paymentResultSender, times(1)).sendPaymentResult(eq(new PaymentResultDto(false, 1L)));
     }

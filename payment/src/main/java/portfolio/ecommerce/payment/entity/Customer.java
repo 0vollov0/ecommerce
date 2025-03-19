@@ -27,8 +27,10 @@ public class Customer extends BaseEntity {
     private boolean deleted;
 
     @Builder
-    public Customer(String name, int amount) {
+    public Customer(Long customerId, String name, int amount, boolean deleted) {
+        this.customerId = customerId;
         this.name = name;
         this.amount = amount;
+        this.deleted = deleted;
     }
 }

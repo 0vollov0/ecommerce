@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.6'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'jacoco'
 }
 
 group = 'portfolio.ecommerce'
@@ -11,6 +12,10 @@ java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
 	}
+}
+
+jacoco {
+	toolVersion = "0.8.8"
 }
 
 repositories {
@@ -35,6 +40,16 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
-tasks.named('test') {
+test {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required.set(true)
+		html.required.set(true)
+	}
 }

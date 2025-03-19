@@ -1,5 +1,6 @@
 package portfolio.ecommerce.order.service;
 
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,6 +46,9 @@ class OrderServiceTest {
     private PaymentRequestSender paymentRequestSender;
 
     @Mock
+    private EntityManager entityManager;
+
+    @Mock
     private RedisService redisService;
 
     @Mock
@@ -61,7 +65,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(productRepository, orderRepository, customerRepository, stockLockRepository, paymentRequestSender, redisService, utilService);
+        orderService = new OrderService(productRepository, orderRepository, customerRepository, stockLockRepository, paymentRequestSender, entityManager, redisService, utilService);
     }
 
     @Test

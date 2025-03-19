@@ -59,7 +59,7 @@ public class OrderControllerIntegrationTest {
         customer = customerRepository.save(Customer.builder().name("1").amount(100000).build());
         category = categoryRepository.save(Category.builder().name("1").build());
         seller = sellerRepository.save(Seller.builder().name("1").build());
-        product = productRepository.save(Product.builder().categoryId(category.getCategoryId()).sellerId(seller.getSellerId()).name("1").salesPrice(10).stock(1000).build());
+        product = productRepository.save(Product.builder().category(category).seller(seller).name("1").salesPrice(10).stock(1000).build());
     }
 
     @AfterEach
@@ -97,5 +97,13 @@ public class OrderControllerIntegrationTest {
         Long orderId = jsonNode.get("orderId").asLong();
 
         shouldDeleteIds.add(orderId);
+    }
+
+    @Test
+    void orderValidationError() throws Exception {
+        mockMvc.perform(post("/orders")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"product_id\":1, \"customer_id\":\"customer\", \"quantity\":10}"))
+                .andExpect(status().isBadRequest());
     }
 }

@@ -5,14 +5,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
     public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
+        System.out.println(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage()+"???????");
         String errorMessage = ex.getBindingResult().getFieldErrors()
                 .stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())

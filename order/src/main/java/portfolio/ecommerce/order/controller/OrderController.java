@@ -47,4 +47,9 @@ public class OrderController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build()); // Optional 처리 개선
     }
+
+    @PostMapping("/force-error")
+    public ResponseEntity<String> forceError() {
+        throw new RuntimeException("Test Internal Server Error"); // 강제 예외 발생
+    }
 }

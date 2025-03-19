@@ -15,19 +15,25 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class StockLock extends portfolio.ecommerce.payment.entity.BaseEntity {
+public class StockLock extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long stockLockId;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
-    private  Order order;
+    @Column(name = "order_id", insertable = false, updatable = false)
+    private Long orderId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+
+    @Column(name = "product_id", insertable = false, updatable = false)
+    private Long productId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
-    private portfolio.ecommerce.payment.entity.Product product;
+    private Product product;
 
     @Column(nullable = false)
     private LocalDateTime expiredAt;
@@ -39,15 +45,27 @@ public class StockLock extends portfolio.ecommerce.payment.entity.BaseEntity {
     private int salesPrice;
 
     @Builder
-    public StockLock(Order order, portfolio.ecommerce.payment.entity.Product product, int salesPrice, int quantity, LocalDateTime expiredAt) {
-        this.order = order;
-        this.product = product;
+    public StockLock(Long stockLockId, Long orderId, Long productId, int salesPrice, int quantity, LocalDateTime expiredAt, Order order, Product product) {
+        this.stockLockId = stockLockId;
+        this.orderId = orderId;
+        this.productId = productId;
         this.quantity = quantity;
         this.expiredAt = expiredAt;
         this.salesPrice = salesPrice;
+
+        this.order = order;
+        this.product = product;
     }
 
     public RequestPaymentDto toPaymentRequestDto() {
-        return new RequestPaymentDto(stockLockId, order.getOrderId(), product.getProductId(), expiredAt, quantity, salesPrice);
+        return new RequestPaymentDto(stockLockId, orderId, productId, expiredAt, quantity, salesPrice);
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void syncIds() {
+        if (order != null) {
+            this.orderId = order.getOrderId();
+        }
     }
 }

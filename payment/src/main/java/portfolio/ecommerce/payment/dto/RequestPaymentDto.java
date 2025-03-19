@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @AllArgsConstructor
-@ToString
 public class RequestPaymentDto {
     private Long stockLockId;
     private Long orderId;

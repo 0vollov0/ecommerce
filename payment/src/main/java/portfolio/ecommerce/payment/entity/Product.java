@@ -8,9 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 @Entity
 @Getter
 @Setter
@@ -21,12 +18,20 @@ public class Product extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
-    @ManyToOne
+    @Column(name = "category_id", insertable = false, updatable = false)
+    private Long categoryId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
+    @JsonIgnore
     private Category category;
 
-    @ManyToOne
+    @Column(name = "seller_id", insertable = false, updatable = false)
+    private Long sellerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
+    @JsonIgnore
     private Seller seller;
 
     @Column
@@ -40,24 +45,39 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private int stock;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "product")
-    private Set<Order> payments = new LinkedHashSet<>();
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "product")
-    private Set<StockLock> stockLocks = new LinkedHashSet<>();
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+//    private Set<Order> orders = new LinkedHashSet<>();
+//
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+//    private Set<StockLock> stockLocks = new LinkedHashSet<>();
 
     @JsonIgnore
     @Column
     private boolean deleted;
 
     @Builder
-    public Product(String name, int salesPrice, int stock, Category category, Seller seller) {
+    public Product(Long productId, String name, int salesPrice, int stock, Long categoryId, Long sellerId, boolean deleted, Category category, Seller seller) {
+        this.productId = productId;
         this.name = name;
         this.salesPrice = salesPrice;
         this.stock = stock;
+        this.categoryId = categoryId;
+        this.sellerId = sellerId;
+        this.deleted = deleted;
+
         this.category = category;
         this.seller = seller;
     }
+//    @PrePersist
+//    @PreUpdate
+//    private void syncIds() {
+//        if (category != null) {
+//            this.categoryId = category.getCategoryId();
+//        }
+//        if (seller != null) {
+//            this.sellerId = seller.getSellerId();
+//        }
+//    }
 }

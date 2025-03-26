@@ -16,6 +16,9 @@ import portfolio.ecommerce.worker.entity.Customer;
 import portfolio.ecommerce.worker.entity.Order;
 import portfolio.ecommerce.worker.entity.Product;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -60,10 +63,12 @@ class PaymentServiceTest {
         mockOrder.setCustomer(mockCustomer);
 
         SseEmitter mockSseEmitter = mock(SseEmitter.class);
-
+        List<Order> orders = new ArrayList<>();
+        orders.add(mockOrder);
+        when(query.getResultList()).thenReturn(orders);
         when(em.createQuery(anyString(), eq(Order.class))).thenReturn(query);
         when(query.setParameter(anyString(), any())).thenReturn(query);
-        when(query.getSingleResult()).thenReturn(mockOrder);
+//        when(query.getSingleResult()).thenReturn(mockOrder);
         when(sseService.getEmitter(existingCustomerId)).thenReturn(mockSseEmitter);
 
         paymentService.processPayment(paymentResultDto);
@@ -87,9 +92,12 @@ class PaymentServiceTest {
 
         SseEmitter mockSseEmitter = mock(SseEmitter.class);
 
+        List<Order> orders = new ArrayList<>();
+        orders.add(mockOrder);
+        when(query.getResultList()).thenReturn(orders);
         when(em.createQuery(anyString(), eq(Order.class))).thenReturn(query);
         when(query.setParameter(anyString(), any())).thenReturn(query);
-        when(query.getSingleResult()).thenReturn(mockOrder);
+//        when(query.getSingleResult()).thenReturn(mockOrder);
         when(sseService.getEmitter(existingCustomerId)).thenReturn(mockSseEmitter);
 
         paymentService.processPayment(paymentResultDto);
@@ -108,9 +116,12 @@ class PaymentServiceTest {
         mockCustomer.setCustomerId(nonExistingCustomerId);
         mockOrder.setCustomer(mockCustomer);
 
+        List<Order> orders = new ArrayList<>();
+        orders.add(mockOrder);
+        when(query.getResultList()).thenReturn(orders);
         when(em.createQuery(anyString(), eq(Order.class))).thenReturn(query);
         when(query.setParameter(anyString(), any())).thenReturn(query);
-        when(query.getSingleResult()).thenReturn(mockOrder);
+//        when(query.getSingleResult()).thenReturn(mockOrder);
         when(sseService.getEmitter(nonExistingCustomerId)).thenReturn(null);
 
         paymentService.processPayment(paymentResultDto);

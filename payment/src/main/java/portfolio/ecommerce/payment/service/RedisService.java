@@ -20,9 +20,9 @@ public class RedisService {
         return (String) redisTemplate.opsForValue().get(key);
     }
 
-//    public void deleteData(String key) {
-//        redisTemplate.delete(key);
-//    }
+    public void deleteData(String key) {
+        redisTemplate.delete(key);
+    }
 
 //    public Boolean lockData(String key, String value, long timeout) {
 //        return redisTemplate.opsForValue().setIfAbsent(key, value, timeout, TimeUnit.MINUTES);

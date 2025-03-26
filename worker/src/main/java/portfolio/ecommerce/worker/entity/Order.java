@@ -8,22 +8,30 @@ import lombok.*;
 @Entity
 @NoArgsConstructor
 @Table(name = "`order`")
-@ToString
 public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long orderId;
 
-    @ManyToOne()
+    @Column(name = "customer_id", insertable = false, updatable = false)
+    private Long customerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @ManyToOne()
+    @Column(name = "seller_id", insertable = false, updatable = false)
+    private Long sellerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
     private Seller seller;
 
-    @ManyToOne()
+    @Column(name = "product_id", insertable = false, updatable = false)
+    private Long productId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
@@ -33,16 +41,20 @@ public class Order extends BaseEntity {
     @Column(nullable = false)
     private int salesPrice;
 
-    // 대기중(0), 결제완료(1), 결제실패(2)
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private int state;
 
     @Builder
-    public Order(Customer customer, Seller seller, Product product, int quantity, int salesPrice) {
-        this.customer = customer;
-        this.seller = seller;
-        this.product = product;
+    public Order(Long orderId, Long customerId, Long sellerId, Long productId, int quantity, int salesPrice) {
+        this.orderId = orderId;
+        this.customerId = customerId;
+        this.sellerId = sellerId;
+        this.productId = productId;
         this.quantity = quantity;
         this.salesPrice = salesPrice;
+
+        this.customer = null;
+        this.seller = null;
+        this.product = null;
     }
 }

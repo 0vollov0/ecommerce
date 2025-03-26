@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import portfolio.ecommerce.payment.dto.PaymentResultDto;
 import portfolio.ecommerce.payment.dto.RequestPaymentDto;
 import portfolio.ecommerce.payment.entity.Customer;
@@ -22,8 +21,7 @@ import portfolio.ecommerce.payment.repository.StockLockRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -135,5 +133,17 @@ class PaymentServiceTest {
         when(orderRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> paymentService.processPayment(requestPaymentDto));
+    }
+
+    @Test
+    void processPayment_ShouldHandleProcessExpiredStockException() {
+        doThrow(new RuntimeException("Stock processing failed")).when(paymentTransactionService).processExpiredStock(requestPaymentDto.getStockLockId());
+        when(orderRepository.findById(requestPaymentDto.getOrderId())).thenReturn(Optional.of(order));
+
+        assertDoesNotThrow(() -> paymentService.processPayment(requestPaymentDto));
+
+        assertEquals(2, order.getState());
+        verify(orderRepository, times(1)).save(any());
+        verify(paymentResultSender, times(1)).sendPaymentResult(any(PaymentResultDto.class));
     }
 }

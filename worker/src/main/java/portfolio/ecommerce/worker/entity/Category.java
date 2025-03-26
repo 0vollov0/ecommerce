@@ -20,7 +20,8 @@ public class Category {
     private String name;
 
     @Builder
-    public Category(String name) {
+    public Category(Long categoryId, String name) {
+        this.categoryId = categoryId;
         this.name = name;
     }
 }

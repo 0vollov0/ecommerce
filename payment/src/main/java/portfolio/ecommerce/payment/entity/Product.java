@@ -70,14 +70,4 @@ public class Product extends BaseEntity {
         this.category = category;
         this.seller = seller;
     }
-//    @PrePersist
-//    @PreUpdate
-//    private void syncIds() {
-//        if (category != null) {
-//            this.categoryId = category.getCategoryId();
-//        }
-//        if (seller != null) {
-//            this.sellerId = seller.getSellerId();
-//        }
-//    }
 }

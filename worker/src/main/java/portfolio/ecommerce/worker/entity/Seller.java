@@ -24,7 +24,9 @@ public class Seller extends BaseEntity {
     private boolean deleted;
 
     @Builder
-    public Seller(String name) {
+    public Seller(Long sellerId, String name, boolean deleted) {
+        this.sellerId = sellerId;
         this.name = name;
+        this.deleted = deleted;
     }
 }

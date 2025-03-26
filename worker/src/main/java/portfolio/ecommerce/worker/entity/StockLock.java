@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import portfolio.ecommerce.worker.dto.RequestPaymentDto;
 
 import java.time.LocalDateTime;
 
@@ -22,15 +21,20 @@ public class StockLock extends BaseEntity {
     @Column(nullable = false)
     private Long stockLockId;
 
-    @ManyToOne
+    @Column(name = "order_id", insertable = false, updatable = false)
+    private Long orderId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @ManyToOne
+    @Column(name = "product_id", insertable = false, updatable = false)
+    private Long productId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @CreatedDate
     @Column(nullable = false)
     private LocalDateTime expiredAt;
 
@@ -41,15 +45,15 @@ public class StockLock extends BaseEntity {
     private int salesPrice;
 
     @Builder
-    public StockLock(Order order, Product product, int salesPrice, int quantity, LocalDateTime expiredAt) {
-        this.order = order;
-        this.product = product;
+    public StockLock(Long stockLockId, Long orderId, Long productId, int salesPrice, int quantity, LocalDateTime expiredAt) {
+        this.stockLockId = stockLockId;
+        this.orderId = orderId;
+        this.productId = productId;
         this.quantity = quantity;
         this.expiredAt = expiredAt;
         this.salesPrice = salesPrice;
-    }
 
-    public RequestPaymentDto toPaymentRequestDto() {
-        return new RequestPaymentDto(stockLockId, order.getOrderId(), product.getProductId(), expiredAt, quantity, salesPrice);
+        this.order = null;
+        this.product = null;
     }
 }

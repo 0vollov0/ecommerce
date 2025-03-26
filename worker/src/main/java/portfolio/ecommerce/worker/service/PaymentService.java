@@ -36,7 +36,6 @@ public class PaymentService {
         Order order = orders.isEmpty() ? null : orders.get(0);
         if (order == null) return;
         SseEmitter sseEmitter = sseService.getEmitter(order.getCustomer().getCustomerId());
-
         if (sseEmitter == null) return;
         OrderResultDto orderResultDto = new OrderResultDto();
         orderResultDto.setSucceed(dto.isSucceed());
